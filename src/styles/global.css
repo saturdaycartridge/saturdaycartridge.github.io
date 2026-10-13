@@ -1,0 +1,199 @@
+@import "@fontsource-variable/archivo/wdth.css";
+
+:root {
+  /* brand */
+  --ink: #1b2233;
+  --ink-2: #2a3349;
+  --slate: #8f99b6;
+  --mist: #c6cddd;
+  --paper: #edf0f6;
+  --white: #ffffff;
+  --sun: #ffc94a;
+  --sun-deep: #e8a514;
+  /* greybox (packs still in the workshop) */
+  --grey: #9a9ea6;
+  --tape: #23252b;
+
+  --focus: var(--ink);
+  --font: "Archivo Variable", "Archivo", ui-sans-serif, system-ui, sans-serif;
+
+  /* perfect-fourth scale on a 17px body */
+  --step--1: 0.8125rem;
+  --step-0: 1.0625rem;
+  --step-1: 1.375rem;
+  --step-2: 1.875rem;
+  --step-3: clamp(2.125rem, 1.6rem + 2vw, 2.75rem);
+  --step-4: clamp(2.5rem, 1.8rem + 3.2vw, 3.875rem);
+  --step-hero: clamp(3.25rem, 0.8rem + 9.6vw, 10.5rem);
+
+  --gutter: clamp(1rem, 0.4rem + 2.6vw, 2.5rem);
+  --measure: 34rem;
+  --header-h: 4.5rem;
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--slate);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: var(--step-0);
+  font-weight: 420;
+  font-stretch: 100%;
+  line-height: 1.55;
+  font-kerning: normal;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img,
+svg,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  line-height: 1.02;
+  font-weight: 760;
+  text-wrap: balance;
+}
+
+h2 {
+  font-size: var(--step-4);
+  font-stretch: 112%;
+  letter-spacing: -0.025em;
+}
+
+h3 {
+  font-size: var(--step-1);
+  font-stretch: 105%;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+a {
+  color: inherit;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.18em;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.wrap {
+  width: 100%;
+  max-width: 82rem;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.skip {
+  position: absolute;
+  left: var(--gutter);
+  top: -4rem;
+  z-index: 100;
+  padding: 0.6rem 1rem;
+  background: var(--sun);
+  color: var(--ink);
+  font-weight: 650;
+  border-radius: 6px;
+}
+
+.skip:focus {
+  top: 1rem;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Buttons: a physical key that travels down when pressed */
+.btn {
+  --lift: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  min-height: 3rem;
+  padding: 0.7rem 1.25rem 0.75rem;
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 680;
+  font-stretch: 108%;
+  letter-spacing: -0.005em;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 var(--lift) 0 var(--ink);
+  transform: translateY(0);
+  transition:
+    transform 90ms ease-out,
+    box-shadow 90ms ease-out,
+    background-color 160ms;
+}
+
+.btn:hover {
+  background: var(--white);
+}
+
+.btn:active {
+  transform: translateY(var(--lift));
+  box-shadow: 0 0 0 var(--ink);
+}
+
+.btn-sun {
+  background: var(--sun);
+}
+
+.btn-sun:hover {
+  background: #ffd46b;
+}
+
+.btn-ghost {
+  background: transparent;
+  box-shadow: none;
+  --lift: 0px;
+}
+
+.btn-ghost:hover {
+  background: rgb(255 255 255 / 0.25);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn {
+    transition: none;
+  }
+}

@@ -1,0 +1,96 @@
+---
+import Mark from "./Mark.astro";
+const { current = "" } = Astro.props;
+const links = [
+  { href: "/#packs", label: "Packs", id: "packs" },
+  { href: "/packs/everyday-cars/#showroom", label: "Showroom", id: "showroom" },
+  { href: "/contact.html", label: "Support", id: "support" },
+];
+---
+<header class="site-header">
+  <a class="brand" href="/" aria-label="Saturday Cartridge, home">
+    <Mark class="brand-mark" />
+    <span class="brand-name">Saturday Cartridge</span>
+  </a>
+  <nav aria-label="Main">
+    <ul>
+      {links.map((l) => (
+        <li><a href={l.href} aria-current={current === l.id ? "page" : undefined}>{l.label}</a></li>
+      ))}
+    </ul>
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    position: absolute;
+    inset: 0 0 auto;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    height: var(--header-h);
+    padding-inline: var(--gutter);
+    pointer-events: none;
+  }
+  .site-header > * {
+    pointer-events: auto;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    font-weight: 740;
+    font-stretch: 112%;
+    letter-spacing: -0.015em;
+  }
+  .brand :global(.brand-mark) {
+    width: 1.55rem;
+    height: auto;
+    transform: rotate(-6deg);
+    transition: transform 240ms cubic-bezier(0.3, 1.6, 0.5, 1);
+  }
+  .brand:hover :global(.brand-mark) {
+    transform: rotate(0deg) translateY(-2px);
+  }
+  ul {
+    display: flex;
+    gap: clamp(0.25rem, 1.5vw, 1.25rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  nav a {
+    display: block;
+    padding: 0.5rem 0.35rem;
+    font-weight: 600;
+    font-stretch: 104%;
+    text-decoration: none;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0 2px;
+    background-position: 0 calc(100% - 0.3rem);
+    background-repeat: no-repeat;
+    transition: background-size 200ms ease-out;
+  }
+  nav a:hover,
+  nav a[aria-current="page"] {
+    background-size: 100% 2px;
+  }
+  @media (max-width: 34rem) {
+    .brand-name {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .brand :global(.brand-mark),
+    nav a {
+      transition: none;
+    }
+  }
+</style>

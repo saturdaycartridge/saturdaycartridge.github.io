@@ -1,0 +1,66 @@
+---
+import Mark from "./Mark.astro";
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <a class="brand" href="/" aria-label="Saturday Cartridge, home"><Mark tile class="foot-mark" /></a>
+    <p class="sign-off">Game-ready 3D assets, made on Saturdays and most other days.</p>
+    <nav aria-label="Footer">
+      <a href="/#packs">Packs</a>
+      <a href="/packs/everyday-cars/#showroom">Showroom</a>
+      <a href="/contact.html">Support</a>
+      <a href="mailto:ifeonu95@gmail.com">Email</a>
+    </nav>
+    <small>© {year} Saturday Cartridge</small>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--ink);
+    color: var(--paper);
+    padding-block: 3.5rem 2.5rem;
+    --focus: var(--sun);
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 1.25rem 2rem;
+  }
+  :global(.foot-mark) {
+    width: 3rem;
+    height: 3rem;
+  }
+  .sign-off {
+    color: var(--mist);
+    max-width: 30rem;
+  }
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.25rem;
+  }
+  nav a {
+    text-decoration: none;
+    font-weight: 600;
+    padding-block: 0.4rem;
+  }
+  nav a:hover {
+    text-decoration: underline;
+  }
+  small {
+    grid-column: 1 / -1;
+    color: var(--slate);
+    font-size: var(--step--1);
+  }
+  @media (max-width: 48rem) {
+    .footer-grid {
+      grid-template-columns: auto 1fr;
+    }
+    nav {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

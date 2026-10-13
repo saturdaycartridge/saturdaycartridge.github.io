@@ -1,0 +1,396 @@
+[
+ {
+  "id": "Hatchback",
+  "title": "Compact Hatchback",
+  "tris": [
+   25894,
+   11072,
+   2780
+  ],
+  "length": 4.02,
+  "width": 1.76,
+  "height": 1.45,
+  "wheelRadius": 0.315,
+  "paint": "Yellow",
+  "faces": [
+   [
+    10841,
+    4187
+   ],
+   [
+    4466,
+    2140
+   ],
+   [
+    886,
+    1008
+   ]
+  ]
+ },
+ {
+  "id": "Sedan",
+  "title": "Executive Sedan",
+  "tris": [
+   27863,
+   11815,
+   2668
+  ],
+  "length": 4.78,
+  "width": 1.85,
+  "height": 1.44,
+  "wheelRadius": 0.335,
+  "paint": "Navy",
+  "faces": [
+   [
+    11564,
+    4704
+   ],
+   [
+    4712,
+    2369
+   ],
+   [
+    858,
+    952
+   ]
+  ]
+ },
+ {
+  "id": "Wagon",
+  "title": "Estate Wagon",
+  "tris": [
+   28082,
+   12365,
+   2732
+  ],
+  "length": 4.82,
+  "width": 1.85,
+  "height": 1.46,
+  "wheelRadius": 0.335,
+  "paint": "Green",
+  "faces": [
+   [
+    11794,
+    4470
+   ],
+   [
+    5097,
+    2171
+   ],
+   [
+    871,
+    990
+   ]
+  ]
+ },
+ {
+  "id": "Crossover",
+  "title": "Compact Crossover",
+  "tris": [
+   27257,
+   12022,
+   3028
+  ],
+  "length": 4.32,
+  "width": 1.82,
+  "height": 1.56,
+  "wheelRadius": 0.348,
+  "paint": "Orange",
+  "faces": [
+   [
+    11355,
+    4547
+   ],
+   [
+    4805,
+    2412
+   ],
+   [
+    944,
+    1140
+   ]
+  ]
+ },
+ {
+  "id": "SUV",
+  "title": "Mid-Size SUV",
+  "tris": [
+   28076,
+   12344,
+   3048
+  ],
+  "length": 4.62,
+  "width": 1.92,
+  "height": 1.67,
+  "wheelRadius": 0.388,
+  "paint": "Graphite",
+  "faces": [
+   [
+    11603,
+    4870
+   ],
+   [
+    4980,
+    2383
+   ],
+   [
+    927,
+    1194
+   ]
+  ]
+ },
+ {
+  "id": "Minivan",
+  "title": "Family Minivan",
+  "tris": [
+   28585,
+   12896,
+   2626
+  ],
+  "length": 4.95,
+  "width": 1.93,
+  "height": 1.73,
+  "wheelRadius": 0.34,
+  "paint": "Sand",
+  "faces": [
+   [
+    12100,
+    4385
+   ],
+   [
+    5425,
+    2045
+   ],
+   [
+    826,
+    974
+   ]
+  ]
+ },
+ {
+  "id": "Pickup",
+  "title": "Double-Cab Pickup",
+  "tris": [
+   24964,
+   10389,
+   2720
+  ],
+  "length": 5.33,
+  "width": 1.93,
+  "height": 1.8,
+  "wheelRadius": 0.4,
+  "paint": "Silver",
+  "faces": [
+   [
+    10711,
+    3541
+   ],
+   [
+    4262,
+    1865
+   ],
+   [
+    873,
+    974
+   ]
+  ]
+ },
+ {
+  "id": "Truck",
+  "title": "Full-Size Pickup",
+  "tris": [
+   25899,
+   11108,
+   2520
+  ],
+  "length": 5.92,
+  "width": 2.06,
+  "height": 1.95,
+  "wheelRadius": 0.415,
+  "paint": "Black",
+  "faces": [
+   [
+    11071,
+    3754
+   ],
+   [
+    4654,
+    1799
+   ],
+   [
+    815,
+    890
+   ]
+  ]
+ },
+ {
+  "id": "Coupe",
+  "title": "Sports Coupe",
+  "tris": [
+   26876,
+   11379,
+   2434
+  ],
+  "length": 4.42,
+  "width": 1.9,
+  "height": 1.27,
+  "wheelRadius": 0.338,
+  "paint": "Red",
+  "faces": [
+   [
+    11324,
+    4213
+   ],
+   [
+    4662,
+    2042
+   ],
+   [
+    827,
+    780
+   ]
+  ]
+ },
+ {
+  "id": "SportsGT",
+  "title": "Track Sports Coupe",
+  "tris": [
+   25800,
+   11146,
+   2496
+  ],
+  "length": 4.57,
+  "width": 1.87,
+  "height": 1.27,
+  "wheelRadius": 0.345,
+  "paint": "Blue",
+  "faces": [
+   [
+    10931,
+    3900
+   ],
+   [
+    4576,
+    1994
+   ],
+   [
+    855,
+    786
+   ]
+  ]
+ },
+ {
+  "id": "Supercar",
+  "title": "Wedge Supercar",
+  "tris": [
+   24897,
+   10587,
+   2458
+  ],
+  "length": 4.66,
+  "width": 2.03,
+  "height": 1.15,
+  "wheelRadius": 0.335,
+  "paint": "Lime",
+  "faces": [
+   [
+    10431,
+    4010
+   ],
+   [
+    4401,
+    1782
+   ],
+   [
+    824,
+    810
+   ]
+  ]
+ },
+ {
+  "id": "Van",
+  "title": "Panel Van",
+  "tris": [
+   21572,
+   8422,
+   2170
+  ],
+  "length": 5.45,
+  "width": 2.02,
+  "height": 2.42,
+  "wheelRadius": 0.35,
+  "paint": "White",
+  "faces": [
+   [
+    9301,
+    2970
+   ],
+   [
+    3520,
+    1381
+   ],
+   [
+    754,
+    662
+   ]
+  ]
+ },
+ {
+  "id": "SemiTruck",
+  "title": "Semi Truck (Tractor Unit)",
+  "tris": [
+   29018,
+   14393,
+   3354
+  ],
+  "length": 7.4,
+  "width": 2.48,
+  "height": 3.7,
+  "wheelRadius": 0.52,
+  "paint": "Red",
+  "hitch": -2.4,
+  "faces": [
+   [
+    13068,
+    2881
+   ],
+   [
+    6449,
+    1494
+   ],
+   [
+    1321,
+    712
+   ]
+  ]
+ },
+ {
+  "id": "SemiTrailer",
+  "title": "Box Semi-Trailer",
+  "tris": [
+   12652,
+   8332,
+   1644
+  ],
+  "length": 13.6,
+  "width": 2.55,
+  "height": 4.0,
+  "wheelRadius": 0.52,
+  "paint": "White",
+  "kingpin": 5.6,
+  "faces": [
+   [
+    6244,
+    164
+   ],
+   [
+    4140,
+    52
+   ],
+   [
+    804,
+    36
+   ]
+  ]
+ }
+]

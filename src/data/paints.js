@@ -1,0 +1,20 @@
+// The 17 paints from Assets/_PackTools/Editor/PackConfig.cs (Unity smoothness, metallic, clear coat).
+export const PAINTS = [
+  { name: "White", hex: "#E8EAED" },
+  { name: "Black", hex: "#0C0C0E" },
+  { name: "Silver", hex: "#A3A8AE", metal: 0.75, smooth: 0.6 },
+  { name: "Graphite", hex: "#3D4249", metal: 0.65, smooth: 0.6 },
+  { name: "Red", hex: "#B0121B" },
+  { name: "Blue", hex: "#16449C", metal: 0.35, smooth: 0.6 },
+  { name: "Navy", hex: "#0D1E45", metal: 0.35, smooth: 0.6 },
+  { name: "Green", hex: "#1E5A3C", metal: 0.3, smooth: 0.6 },
+  { name: "Yellow", hex: "#E3B505" },
+  { name: "Orange", hex: "#D9560B" },
+  { name: "Mint", hex: "#8CCFB3" },
+  { name: "Pink", hex: "#E8A5B8" },
+  { name: "Sand", hex: "#C3AD86", metal: 0.25, smooth: 0.58 },
+  { name: "Lime", hex: "#8ED10B" },
+  { name: "Violet", hex: "#5B2A9E", metal: 0.35, smooth: 0.6 },
+  { name: "Matte_Black", hex: "#151517", smooth: 0.28, coat: 0 },
+  { name: "Matte_Grey", hex: "#5B6068", smooth: 0.3, coat: 0 },
+].map((p) => ({ metal: 0, smooth: 0.62, coat: 1, ...p }));
