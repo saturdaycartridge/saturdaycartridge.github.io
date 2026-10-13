@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact and support – Saturday Cartridge</title>
+  <meta name="description" content="Get help with Saturday Cartridge asset packs for Unity: email support, what to include, and answers to common questions.">
+  <meta name="theme-color" content="#8f99b6">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Saturday Cartridge">
+  <meta property="og:title" content="Contact and support – Saturday Cartridge">
+  <meta property="og:image" content="https://saturdaycartridge.github.io/assets/og.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <div class="band">
+    <header class="site-header wrap">
+      <a class="brand" href="./" aria-label="Saturday Cartridge, home">
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+          <rect width="64" height="64" rx="14" fill="#1B2233"/>
+          <rect x="21" y="48" width="22" height="7" rx="1.2" fill="#8F99B6"/>
+          <path d="M18 9h28a5 5 0 0 1 5 5v29h-3v6a2 2 0 0 1-2 2H18a2 2 0 0 1-2-2v-6h-3V14a5 5 0 0 1 5-5z" fill="#EDF0F6"/>
+          <path d="M19 15h26M19 19h26" stroke="#8F99B6" stroke-width="2.2" stroke-linecap="round"/>
+          <rect x="18" y="23.5" width="28" height="17.5" rx="2.5" fill="#FFC94A"/>
+          <path d="M25 38a7 7 0 0 1 14 0z" fill="#1B2233"/>
+          <path d="M32 26.6v2.4M24.9 29.9l1.6 1.6M39.1 29.9l-1.6 1.6" stroke="#1B2233" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span>Saturday Cartridge</span>
+      </a>
+      <nav class="site-nav" aria-label="Main">
+        <a href="./#packs">Packs</a>
+        <a href="contact.html" aria-current="page">Support</a>
+      </nav>
+    </header>
+
+    <div class="page-head wrap">
+      <h1 class="page-title">Contact and support</h1>
+      <p>Questions, bug reports and licence queries about any Saturday Cartridge pack.</p>
+    </div>
+  </div>
+
+  <main id="main" class="section wrap">
+    <div class="contact-grid">
+      <div class="stack">
+        <section aria-labelledby="email-title">
+          <h2 id="email-title">Email</h2>
+          <a class="mail-link" href="mailto:ifeonu95@gmail.com">ifeonu95@gmail.com</a>
+          <p>Replies within two business days, Monday to Friday.</p>
+        </section>
+
+        <section aria-labelledby="include-title">
+          <h3 id="include-title">What to include</h3>
+          <ul class="checklist">
+            <li>The pack name and version (the version is at the end of the pack's Documentation/README.md)</li>
+            <li>Your Unity version and render pipeline (URP or Built-in)</li>
+            <li>What you expected and what happened, with a screenshot if you can</li>
+            <li>Any errors from the Console</li>
+          </ul>
+        </section>
+
+        <section aria-labelledby="business-title">
+          <h3 id="business-title">Business enquiries</h3>
+          <p>For partnerships, press or custom work, use the same address and put "Business" in the subject line.</p>
+        </section>
+      </div>
+
+      <section class="faq" aria-labelledby="faq-title">
+        <h2 id="faq-title">Common questions</h2>
+        <details>
+          <summary>The materials are pink. How do I fix that?</summary>
+          <p>Pink means the materials don't match your project's render pipeline. Each pack's documentation lists the pipelines it supports and how to switch. In Everyday Cars, which uses URP by default, a Built-in project needs RenderPipelines/BuiltIn_Materials.unitypackage from the pack folder: importing it replaces the materials in place, and the prefabs keep working.</p>
+        </details>
+        <details>
+          <summary>Which Unity versions are supported?</summary>
+          <p>Each pack's store page lists the versions it supports. Everyday Cars works with Unity 2022.3 or newer, including Unity 6.</p>
+        </details>
+        <details>
+          <summary>Can I edit the models?</summary>
+          <p>Yes. Models come as FBX files that open in Blender, Maya or any other 3D package. In Everyday Cars the meshes are quad-dominant with solid-colour materials and no UVs; other packs list their topology and texturing on their store pages.</p>
+        </details>
+        <details>
+          <summary>Do the Everyday Cars vehicles drive?</summary>
+          <p>No, the pack is art only, with no driving physics or controller. Wheels and the steering wheel are separate objects with correct pivots, and a small component spins and steers them, so you can connect your own controller.</p>
+        </details>
+        <details>
+          <summary>Can I use the assets in a commercial game?</summary>
+          <p>Yes. Packs are sold under the Unity Asset Store EULA, which allows use in your own games and apps but not reselling or sharing the assets on their own. The <a href="https://unity.com/legal/as-terms">Asset Store Terms of Service and EULA</a> have the full terms.</p>
+        </details>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <a class="brand" href="./" aria-label="Saturday Cartridge, home">
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+          <rect width="64" height="64" rx="14" fill="#2a3349"/>
+          <rect x="21" y="48" width="22" height="7" rx="1.2" fill="#8F99B6"/>
+          <path d="M18 9h28a5 5 0 0 1 5 5v29h-3v6a2 2 0 0 1-2 2H18a2 2 0 0 1-2-2v-6h-3V14a5 5 0 0 1 5-5z" fill="#EDF0F6"/>
+          <path d="M19 15h26M19 19h26" stroke="#8F99B6" stroke-width="2.2" stroke-linecap="round"/>
+          <rect x="18" y="23.5" width="28" height="17.5" rx="2.5" fill="#FFC94A"/>
+          <path d="M25 38a7 7 0 0 1 14 0z" fill="#1B2233"/>
+          <path d="M32 26.6v2.4M24.9 29.9l1.6 1.6M39.1 29.9l-1.6 1.6" stroke="#1B2233" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </a>
+      <small>© 2026 Saturday Cartridge</small>
+      <nav aria-label="Footer">
+        <a href="./#packs">Packs</a>
+        <a href="contact.html">Support</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>
