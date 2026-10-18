@@ -1,34 +1,45 @@
 @import "@fontsource-variable/archivo/wdth.css";
 
+/* Saturday Cartridge: a quiet workshop sheet. Paper, ink, hairlines and one warm signal colour.
+   Archivo's width axis does the expressive work: condensed for labels, wide for display. */
 :root {
-  /* brand */
-  --ink: #1b2233;
-  --ink-2: #2a3349;
-  --slate: #8f99b6;
-  --mist: #c6cddd;
-  --paper: #edf0f6;
-  --white: #ffffff;
+  --paper: #f3f2ee;
+  --paper-2: #e9e8e2;
+  --card: #fbfaf7;
+  --ink: #15171c;
+  --ink-2: #3a3e47;
+  --muted: #6c707a;
+  --line: rgb(21 23 28 / 0.12);
+  --line-2: rgb(21 23 28 / 0.22);
   --sun: #ffc94a;
   --sun-deep: #e8a514;
-  /* greybox (packs still in the workshop) */
-  --grey: #9a9ea6;
-  --tape: #23252b;
+  --signal: #23c4a0;
+  --night: #0d1013;
+  --studio: #7584a7; /* the slate studio floor in the pack captures, as an image placeholder */
+
+  /* legacy names still used by the showroom */
+  --slate: #8f99b6;
+  --mist: #c6cddd;
+  --white: #ffffff;
 
   --focus: var(--ink);
   --font: "Archivo Variable", "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
 
-  /* perfect-fourth scale on a 17px body */
+  --step--2: 0.6875rem;
   --step--1: 0.8125rem;
-  --step-0: 1.0625rem;
-  --step-1: 1.375rem;
-  --step-2: 1.875rem;
-  --step-3: clamp(2.125rem, 1.6rem + 2vw, 2.75rem);
-  --step-4: clamp(2.5rem, 1.8rem + 3.2vw, 3.875rem);
-  --step-hero: clamp(3.25rem, 0.8rem + 9.6vw, 10.5rem);
+  --step-0: 1rem;
+  --step-1: 1.25rem;
+  --step-2: 1.625rem;
+  --step-3: clamp(1.875rem, 1.4rem + 1.8vw, 2.5rem);
+  --step-4: clamp(2.25rem, 1.5rem + 3vw, 3.5rem);
+  --step-hero: clamp(3.25rem, 0.6rem + 10.5vw, 11.5rem);
 
-  --gutter: clamp(1rem, 0.4rem + 2.6vw, 2.5rem);
+  --gutter: clamp(1rem, 0.4rem + 2.6vw, 2.75rem);
   --measure: 34rem;
-  --header-h: 4.5rem;
+  --header-h: 4.25rem;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   color-scheme: light;
 }
 
@@ -41,20 +52,26 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
-  background: var(--slate);
+  background: var(--paper);
   color: var(--ink);
   font-family: var(--font);
   font-size: var(--step-0);
-  font-weight: 420;
+  font-weight: 400;
   font-stretch: 100%;
   line-height: 1.55;
   font-kerning: normal;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--sun);
+  color: var(--ink);
 }
 
 img,
@@ -69,20 +86,20 @@ h2,
 h3 {
   margin: 0;
   line-height: 1.02;
-  font-weight: 760;
+  font-weight: 640;
   text-wrap: balance;
 }
 
 h2 {
   font-size: var(--step-4);
-  font-stretch: 112%;
-  letter-spacing: -0.025em;
+  font-stretch: 116%;
+  letter-spacing: -0.035em;
 }
 
 h3 {
   font-size: var(--step-1);
-  font-stretch: 105%;
-  letter-spacing: -0.01em;
+  font-stretch: 108%;
+  letter-spacing: -0.015em;
   line-height: 1.15;
 }
 
@@ -93,19 +110,19 @@ p {
 
 a {
   color: inherit;
-  text-decoration-thickness: 0.08em;
-  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
 }
 
 :focus-visible {
-  outline: 3px solid var(--focus);
+  outline: 2px solid var(--focus);
   outline-offset: 3px;
-  border-radius: 2px;
+  border-radius: 4px;
 }
 
 .wrap {
   width: 100%;
-  max-width: 82rem;
+  max-width: 84rem;
   margin-inline: auto;
   padding-inline: var(--gutter);
 }
@@ -127,8 +144,8 @@ a {
   padding: 0.6rem 1rem;
   background: var(--sun);
   color: var(--ink);
-  font-weight: 650;
-  border-radius: 6px;
+  font-weight: 600;
+  border-radius: 999px;
 }
 
 .skip:focus {
@@ -139,61 +156,345 @@ a {
   font-variant-numeric: tabular-nums;
 }
 
-/* Buttons: a physical key that travels down when pressed */
-.btn {
-  --lift: 4px;
+/* Small condensed caps: section numbers, labels, metadata */
+.label {
+  font-size: var(--step--2);
+  font-weight: 600;
+  font-stretch: 72%;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.mono {
+  font-family: var(--mono);
+  font-size: 0.85em;
+  letter-spacing: -0.01em;
+}
+
+/* Section heading row: number, title */
+.section-head {
+  display: grid;
+  grid-template-columns: 4.5rem 1fr;
+  gap: 0.5rem 1rem;
+  align-items: baseline;
+  padding-block: 1.25rem 2.25rem;
+  border-top: 1px solid var(--line);
+}
+
+.section-head .label {
+  padding-top: 0.35rem;
+}
+
+@media (max-width: 40rem) {
+  .section-head {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Status pill with a live dot */
+.pill {
   display: inline-flex;
   align-items: center;
-  gap: 0.6em;
-  min-height: 3rem;
-  padding: 0.7rem 1.25rem 0.75rem;
-  border: 2px solid var(--ink);
-  border-radius: 10px;
-  background: var(--paper);
+  gap: 0.5em;
+  padding: 0.3rem 0.75rem 0.32rem 0.6rem;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  font-size: var(--step--1);
+  font-weight: 550;
+  font-stretch: 92%;
+  line-height: 1.2;
+  white-space: nowrap;
+  background: var(--card);
   color: var(--ink);
+}
+
+.pill::before {
+  content: "";
+  flex: none;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: var(--sun-deep);
+  animation: pulse 2.4s var(--ease) infinite;
+}
+
+.pill-quiet::before {
+  background: var(--muted);
+  animation: none;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgb(232 165 20 / 0.55);
+  }
+  70%,
+  100% {
+    box-shadow: 0 0 0 0.45rem rgb(232 165 20 / 0);
+  }
+}
+
+/* Buttons: a quiet pill that fills from below on hover; magnetic where the pointer allows */
+.btn {
+  --bg: var(--ink);
+  --fg: var(--paper);
+  --fill: var(--sun);
+  --fill-fg: var(--ink);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+  min-height: 2.9rem;
+  padding: 0.65rem 1.25rem 0.7rem;
+  border: 1px solid var(--bg);
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--fg);
   font: inherit;
-  font-weight: 680;
-  font-stretch: 108%;
+  font-weight: 560;
+  font-stretch: 104%;
   letter-spacing: -0.005em;
   text-decoration: none;
   cursor: pointer;
-  box-shadow: 0 var(--lift) 0 var(--ink);
-  transform: translateY(0);
+  overflow: hidden;
+  isolation: isolate;
   transition:
-    transform 90ms ease-out,
-    box-shadow 90ms ease-out,
-    background-color 160ms;
+    transform 450ms var(--ease),
+    color 250ms,
+    border-color 250ms;
 }
 
-.btn:hover {
-  background: var(--white);
+.btn::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--fill);
+  transform: translateY(102%);
+  transition: transform 450ms var(--ease);
+}
+
+.btn:hover::after,
+.btn:focus-visible::after {
+  transform: translateY(0);
+}
+
+.btn:hover,
+.btn:focus-visible {
+  color: var(--fill-fg);
+  border-color: var(--fill);
 }
 
 .btn:active {
-  transform: translateY(var(--lift));
-  box-shadow: 0 0 0 var(--ink);
+  scale: 0.97;
+}
+
+.btn .arrow {
+  display: inline-block;
+  transition: transform 450ms var(--ease);
+}
+
+.btn:hover .arrow {
+  transform: translateX(0.25em);
 }
 
 .btn-sun {
-  background: var(--sun);
-}
-
-.btn-sun:hover {
-  background: #ffd46b;
+  --bg: var(--sun);
+  --fg: var(--ink);
+  --fill: var(--ink);
+  --fill-fg: var(--paper);
 }
 
 .btn-ghost {
-  background: transparent;
-  box-shadow: none;
-  --lift: 0px;
+  --bg: transparent;
+  --fg: var(--ink);
+  border-color: var(--line-2);
 }
 
-.btn-ghost:hover {
-  background: rgb(255 255 255 / 0.25);
+/* Text link with an underline that draws in from the left */
+.link {
+  text-decoration: none;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 380ms var(--ease);
+}
+
+.link:hover,
+.link:focus-visible {
+  background-size: 100% 1px;
+}
+
+/* Reveal on scroll (micro.js adds .is-in); everything is visible without script */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 700ms var(--ease),
+    transform 700ms var(--ease);
+  transition-delay: calc(var(--i, 0) * 60ms);
+}
+
+.js [data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Custom cursor: a dot that grows into a ring, or a labelled disc, over interactive things */
+.cursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin: -0.25rem 0 0 -0.25rem;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  pointer-events: none;
+  opacity: 0;
+  transition:
+    width 380ms var(--ease),
+    height 380ms var(--ease),
+    margin 380ms var(--ease),
+    background-color 300ms,
+    opacity 300ms,
+    scale 200ms var(--ease);
+}
+
+.cursor.is-on {
+  opacity: 1;
+}
+
+.cursor.is-hover {
+  width: 2.4rem;
+  height: 2.4rem;
+  margin: -1.2rem 0 0 -1.2rem;
+  background: rgb(255 201 74 / 0.55);
+}
+
+.cursor.is-label {
+  width: 4.75rem;
+  height: 4.75rem;
+  margin: -2.375rem 0 0 -2.375rem;
+  background: var(--ink);
+}
+
+.cursor.is-dark {
+  background: var(--sun);
+  color: var(--ink);
+}
+
+.cursor span {
+  font-size: var(--step--2);
+  font-weight: 650;
+  font-stretch: 74%;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0;
+  transition: opacity 200ms;
+}
+
+.cursor.is-label span {
+  opacity: 1;
+}
+
+.cursor.is-down {
+  scale: 0.82;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .cursor {
+    display: none;
+  }
+}
+
+/* Toast for copy-to-clipboard and other confirmations */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 1.5rem;
+  z-index: 150;
+  padding: 0.55rem 1rem 0.6rem;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: var(--step--1);
+  font-weight: 550;
+  transform: translate(-50%, 160%);
+  opacity: 0;
+  transition:
+    transform 550ms var(--spring),
+    opacity 300ms;
+  pointer-events: none;
+}
+
+.toast.is-on {
+  transform: translate(-50%, 0);
+  opacity: 1;
+}
+
+/* Scroll progress hairline */
+.progress {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 60;
+  height: 2px;
+  background: var(--sun-deep);
+  transform-origin: 0 50%;
+  transform: scaleX(var(--p, 0));
+  pointer-events: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .btn {
-    transition: none;
+  html {
+    scroll-behavior: auto;
   }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+  .js [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Floating image that follows the pointer over [data-preview] rows */
+.float-preview {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 40;
+  width: min(22rem, 34vw);
+  aspect-ratio: 3 / 2;
+  margin: -7.5rem 0 0 1.5rem;
+  border-radius: 10px;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  scale: 0.85;
+  transition:
+    opacity 300ms var(--ease),
+    scale 500ms var(--ease);
+  box-shadow: 0 24px 60px -24px rgb(21 23 28 / 0.45);
+}
+
+.float-preview.is-on {
+  opacity: 1;
+  scale: 1;
+}
+
+.float-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }

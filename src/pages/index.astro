@@ -1,490 +1,459 @@
 ---
 import Base from "../layouts/Base.astro";
 import { packs } from "../data/packs.js";
-import vehicles from "../data/everyday-cars.json";
 
-const hatch = vehicles.find((v) => v.id === "Hatchback");
-const n = (x) => x.toLocaleString("en-GB");
-const [quads, tris] = hatch.faces[0];
+const released = packs.filter((p) => p.href);
+const cards = {
+  "everyday-cars": {
+    src: "/assets/img/lineup-1800.webp",
+    srcset: "/assets/img/lineup-960.webp 960w, /assets/img/lineup-1800.webp 1800w",
+    w: 1800,
+    h: 900,
+    alt: "The Everyday Cars line-up parked in a loose group, from a yellow hatchback to a red semi truck with a box trailer.",
+    cta: "Open the showroom",
+  },
+  helicopters: {
+    src: "/assets/img/helicopters/cover-1600.webp",
+    srcset: "/assets/img/helicopters/cover-800.webp 800w, /assets/img/helicopters/cover-1600.webp 1600w",
+    w: 1600,
+    h: 1067,
+    alt: "Six helicopters in a shallow V on a plain blue-grey studio floor: a red firefighter, a desert-camouflage gunship, a dark green gunship, a white and red rescue twin, an olive tandem-rotor transport and a dark green utility helicopter.",
+    cta: "Walk around the fleet",
+  },
+};
+const method = [
+  { t: "Topology you can keep working on", d: "Clean, deliberate meshes that open in Blender or Maya ready for your own changes, not a tangle to clean up first." },
+  { t: "Levels of detail that hold their shape", d: "Three LODs per model with a ready LOD Group, checked at the distances they switch, so silhouettes survive." },
+  { t: "Prefabs that are ready to place", d: "Materials, colliders, pivots and components come set up. Drag a prefab into a scene and it already looks right." },
+  { t: "Documented and answered", d: "Every pack ships with a README that tells you what is in it and what is not. Support replies within two business days." },
+];
 ---
 <Base current="home">
-  <link slot="head" rel="preload" href="/models/everyday-cars/Hatchback.glb.gz" as="fetch" crossorigin />
   <main id="main">
-    <section class="story" id="story" aria-labelledby="hero-title">
-      <span class="story-anchor" id="inside" style="--at: 2.6" aria-hidden="true"></span>
-      <span class="story-anchor" id="packs" style="--at: 9.2" aria-hidden="true"></span>
-
-      <div class="stage">
-        <canvas class="stage-canvas" aria-hidden="true"></canvas>
-        <p class="stage-clock" aria-hidden="true"><span>Sat</span> <time class="num" datetime="06:20">06:20</time></p>
-
-        <div class="beat beat-hero" data-beat="hero">
-          <h1 class="hero-title" id="hero-title"><span>Saturday</span> <span>Cartridge</span></h1>
-          <p class="hero-lede">
-            We make game-ready 3D assets for Unity, with Unreal Engine packs on the way. Every pack arrives tidy,
-            documented and ready to drop into a scene.
-          </p>
-          <div class="hero-actions">
-            <a class="btn btn-sun" href="#packs">See the packs</a>
-            <a class="btn btn-ghost" href="/packs/everyday-cars/#showroom">Open the showroom</a>
-          </div>
-          <p class="hero-cue" aria-hidden="true">Scroll to look inside the cartridge</p>
-          <img class="beat-fallback" src="/assets/img/lineup-1800.webp" srcset="/assets/img/lineup-960.webp 960w, /assets/img/lineup-1800.webp 1800w" sizes="(min-width: 60rem) 60vw, 100vw" width="1800" height="900" alt="The Everyday Cars line-up parked in a loose group, from a yellow hatchback to a red semi truck with a box trailer." />
-        </div>
-
-        <article class="beat beat-panel" data-beat="topology" aria-labelledby="b-topology">
-          <h2 id="b-topology">Topology you can keep working on</h2>
-          <p>We model in quads with deliberate edge flow. Open a mesh in Blender or Maya and it is ready for your own changes, not a tangle of triangles to clean up first.</p>
-          <p class="readout num" data-readout="topology">Compact Hatchback, LOD0: {n(quads)} quads and {n(tris)} triangles</p>
-          <img class="beat-fallback" src="/assets/img/interior-1200.webp" width="1200" height="675" loading="lazy" alt="A beige SUV seen from above, its seats and dashboard visible through the glass." />
-        </article>
-
-        <article class="beat beat-panel" data-beat="lod" aria-labelledby="b-lod">
-          <h2 id="b-lod">Levels of detail that keep their shape</h2>
-          <p>Each lower level is rebuilt at a lower density instead of being run through a decimator, so distant objects keep their silhouette and still shade smoothly.</p>
-          <p class="readout num" data-readout="lod">LOD0: {n(hatch.tris[0])} triangles, full detail</p>
-          <img class="beat-fallback" src="/assets/img/lods-1200.webp" width="1200" height="675" loading="lazy" alt="The same blue SUV three times, at full, medium and low detail." />
-        </article>
-
-        <article class="beat beat-panel" data-beat="paint" aria-labelledby="b-paint">
-          <h2 id="b-paint">Prefabs that are ready to place</h2>
-          <p>Materials, LOD groups, colliders and colour variants come set up. Drag a prefab into your scene and it already looks right.</p>
-          <p class="readout num" data-readout="paint">Paint_Yellow, colour 1 of 17</p>
-          <img class="beat-fallback" src="/assets/img/colours-1200.webp" width="1200" height="675" loading="lazy" alt="Twenty hatchbacks parked in rows, each in a different paint colour." />
-        </article>
-
-        <article class="beat beat-panel" data-beat="lights" aria-labelledby="b-lights">
-          <h2 id="b-lights">Parts that are wired up</h2>
-          <p>Wheels turn on their own pivots and lamps switch from your scripts, so the asset is ready for whatever you build around it.</p>
-          <p class="readout num" data-readout="lights">On: headlights, tail lights</p>
-          <img class="beat-fallback" src="/assets/img/lights-1200.webp" width="1200" height="675" loading="lazy" alt="A pickup, a sedan and a sports coupe at night with headlights and tail lights on." />
-        </article>
-
-        <div class="beat beat-library" data-beat="library">
-          <div class="library-head">
-            <h2>Packs</h2>
-            <p>Everyday Cars is the first cartridge out of the workshop. More are on the bench, including our first packs for Unreal Engine.</p>
-          </div>
-          <ul class="shelf" role="list">
-            {packs.map((p) => (
-              <li class={`shelf-item${p.href ? " is-out" : ""}`} data-pack={p.id}>
-                {p.href ? (
-                  <a class="shelf-link" href={p.href}>
-                    <span class="shelf-title">{p.title}</span>
-                    <span class="shelf-sub">{p.subtitle}</span>
-                  </a>
-                ) : (
-                  <span class="shelf-title">{p.title}</span>
-                )}
-                <span class="shelf-meta">
-                  <span class="shelf-engine">{p.engine}</span>
-                  <span class="shelf-status">{p.status}</span>
-                </span>
-              </li>
-            ))}
-          </ul>
+    <section class="hero wrap" aria-labelledby="hero-title">
+      <p class="label hero-kicker" data-reveal>Game-ready 3D assets for Unity <span aria-hidden="true">/</span> Unreal Engine on the way</p>
+      <h1 class="wordmark" id="hero-title" data-wordmark data-cursor-hover>Saturday Cartridge</h1>
+      <div class="hero-foot">
+        <p class="lede" data-reveal style="--i: 2">
+          We make tidy, documented 3D asset packs. Every model arrives with its LODs, materials and prefabs set up,
+          ready to drop into a scene.
+        </p>
+        <div class="hero-actions" data-reveal style="--i: 3">
+          <a class="btn" href="#packs" data-magnetic>See the packs <span class="arrow" aria-hidden="true">↓</span></a>
+          <a class="btn btn-ghost" href="/packs/helicopters/" data-magnetic>New: helicopters <span class="arrow" aria-hidden="true">→</span></a>
         </div>
       </div>
     </section>
 
-    <section class="help" aria-labelledby="help-title">
-      <div class="wrap help-grid">
+    <section class="wrap packs" id="packs" aria-labelledby="packs-title">
+      <div class="section-head">
+        <span class="label">Index</span>
+        <h2 id="packs-title">Packs</h2>
+      </div>
+      <ol class="pack-list" role="list">
+        {packs.map((p, i) => (
+          <li data-reveal style={`--i: ${i}`}>
+            {p.href ? (
+              <a class="pack-row" href={p.href} data-preview={p.preview} data-cursor="View">
+                <span class="label no num">{p.no}</span>
+                <span class="row-title">
+                  <span class="row-name">{p.title}</span>
+                  <span class="row-sub">{p.subtitle}</span>
+                </span>
+                <span class="label row-engine">{p.engine}</span>
+                <span class="pill">{p.status}</span>
+                <span class="row-arrow" aria-hidden="true">→</span>
+              </a>
+            ) : (
+              <div class="pack-row is-quiet">
+                <span class="label no num">{p.no}</span>
+                <span class="row-title">
+                  <span class="row-name">{p.title}</span>
+                  <span class="row-sub">{p.subtitle}</span>
+                </span>
+                <span class="label row-engine">{p.engine}</span>
+                <span class="pill pill-quiet">{p.status}</span>
+                <span class="row-arrow" aria-hidden="true"></span>
+              </div>
+            )}
+          </li>
+        ))}
+      </ol>
+
+      <div class="cards">
+        {released.map((p, i) => {
+          const c = cards[p.id];
+          return (
+            <a class="card" href={p.href} data-tilt="3" data-cursor={i ? "Enter" : "Drive"} data-reveal style={`--i: ${i}`}>
+              <div class="card-media">
+                <img src={c.src} srcset={c.srcset} sizes="(min-width: 64rem) 42rem, 100vw" width={c.w} height={c.h} loading="lazy" alt={c.alt} />
+              </div>
+              <div class="card-body">
+                <span class="label">{p.no} <span aria-hidden="true">/</span> {p.engine}</span>
+                <h3>{p.title} <span class="card-sub">{p.subtitle}</span></h3>
+                <p>{p.summary}</p>
+                <ul class="stats" role="list">
+                  {p.stats.map((s) => (
+                    <li><strong class="num" data-count={s.n}>{s.n}</strong><span>{s.label}</span></li>
+                  ))}
+                </ul>
+                <span class="card-cta">{c.cta} <span aria-hidden="true">→</span></span>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    </section>
+
+    <section class="wrap method" aria-labelledby="method-title">
+      <div class="section-head">
+        <span class="label">Method</span>
+        <h2 id="method-title">How a pack arrives</h2>
+      </div>
+      <ol class="method-list" role="list">
+        {method.map((m, i) => (
+          <li data-reveal style={`--i: ${i}`}>
+            <span class="label num">0{i + 1}</span>
+            <h3>{m.t}</h3>
+            <p>{m.d}</p>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="wrap help" aria-labelledby="help-title">
+      <div class="help-inner" data-reveal data-cursor-dark>
         <h2 id="help-title">Stuck on something?</h2>
         <p>Email support with the pack name, your Unity version and what you expected to happen. You will get a reply within two business days.</p>
-        <a class="btn btn-sun" href="/contact.html">Contact support</a>
+        <a class="btn btn-sun" href="/contact.html" data-magnetic>Contact support <span class="arrow" aria-hidden="true">→</span></a>
       </div>
     </section>
   </main>
 </Base>
 
-<script>
-  import { startStory } from "../three/story.js";
-  const story = document.getElementById("story");
-  if (story) startStory(story);
-</script>
-
 <style>
-  /* Without WebGL (or before the script runs) the story is an ordinary page: each beat in turn,
-     with a still image. The live version pins one screen and lays the beats over the canvas. */
-  .story {
-    position: relative;
-    padding-top: var(--header-h);
+  .hero {
+    display: grid;
+    align-content: end;
+    min-height: min(100svh, 62rem);
+    padding-top: calc(var(--header-h) + 3rem);
+    padding-bottom: clamp(2.5rem, 6vh, 4.5rem);
   }
-  .stage-canvas,
-  .stage-clock,
-  .story-anchor,
-  .hero-cue {
-    display: none;
-  }
-  .beat {
-    padding: 2.5rem var(--gutter);
-    max-width: 82rem;
-    margin-inline: auto;
-  }
-  .beat-fallback {
-    width: 100%;
-    height: auto;
-    margin-top: 1.5rem;
-    border-radius: 12px;
-  }
-  .beat-panel h2,
-  .library-head h2 {
-    font-size: var(--step-3);
-    margin-bottom: 0.75rem;
-  }
-  .beat-panel p {
-    max-width: var(--measure);
-  }
-  .readout {
-    margin-top: 1rem;
-    font-size: var(--step--1);
-    font-weight: 600;
-    font-stretch: 88%;
-    letter-spacing: 0.01em;
-    color: var(--ink-2);
+  .hero-kicker {
+    margin-bottom: 1.25rem;
   }
 
-  /* hero */
-  .hero-title {
-    font-size: clamp(3rem, 1.1rem + 6.6vw, 8.25rem);
-    font-weight: 820;
-    font-stretch: 125%;
-    letter-spacing: -0.035em;
+  /* The wordmark: each letter swells and condenses near the pointer (micro.js) */
+  .wordmark {
+    font-size: var(--step-hero);
+    font-weight: 560;
+    font-stretch: 112%;
+    letter-spacing: -0.055em;
     line-height: 0.84;
-    margin-left: -0.04em;
+    margin-left: -0.05em;
+    cursor: default;
   }
-  .hero-title span {
+  .wordmark :global(.wm-word) {
     display: block;
+    white-space: nowrap;
   }
-  .hero-lede {
-    margin-top: 1.4rem;
-    max-width: 31rem;
+  .wordmark :global(.wm-letter) {
+    display: inline-block;
+  }
+  /* hidden only until the script splits it; shown anyway if the script is slow to arrive */
+  :global(.js) .wordmark:not(:global(.wm-ready)) {
+    opacity: 0;
+    animation: appear 1ms 1.2s forwards;
+  }
+  @keyframes appear {
+    to {
+      opacity: 1;
+    }
+  }
+  .wordmark:global(.wm-ready) :global(.wm-letter) {
+    animation: rise 900ms var(--ease) both;
+    animation-delay: var(--d);
+  }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(0.35em);
+      font-stretch: 62%;
+    }
+  }
+
+  .hero-foot {
+    display: grid;
+    grid-template-columns: minmax(0, 30rem) auto;
+    justify-content: space-between;
+    align-items: end;
+    gap: 1.5rem 3rem;
+    margin-top: clamp(2rem, 5vh, 3.5rem);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+  .lede {
     font-size: var(--step-1);
     line-height: 1.4;
-    font-weight: 440;
+    color: var(--ink-2);
   }
   .hero-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.75rem 1rem;
-    margin-top: 1.75rem;
+    gap: 0.75rem;
+  }
+  @media (max-width: 52rem) {
+    .hero-foot {
+      grid-template-columns: 1fr;
+    }
   }
 
-  /* shelf (fallback: a simple list) */
-  .library-head p {
-    max-width: var(--measure);
+  /* Pack index: one hairline row per pack */
+  .packs {
+    padding-top: 3rem;
   }
-  .shelf {
+  .pack-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-bottom: 1px solid var(--line);
+  }
+  .pack-row {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    grid-template-columns: 4.5rem minmax(0, 1fr) 8rem auto 2rem;
+    align-items: center;
     gap: 1rem;
-    margin: 1.5rem 0 0;
+    padding-block: 1.6rem;
+    border-top: 1px solid var(--line);
+    text-decoration: none;
+    position: relative;
+  }
+  a.pack-row::before {
+    content: "";
+    position: absolute;
+    inset: 0 calc(var(--gutter) * -0.5);
+    z-index: -1;
+    border-radius: 12px;
+    background: var(--card);
+    opacity: 0;
+    transition: opacity 300ms;
+  }
+  a.pack-row:hover::before {
+    opacity: 1;
+  }
+  .row-title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 1rem;
+  }
+  .row-name {
+    font-size: var(--step-3);
+    font-weight: 560;
+    font-stretch: 112%;
+    letter-spacing: -0.035em;
+    line-height: 1;
+    transition: font-stretch 500ms var(--ease), letter-spacing 500ms var(--ease);
+  }
+  a.pack-row:hover .row-name {
+    font-stretch: 125%;
+    letter-spacing: -0.03em;
+  }
+  .row-sub {
+    color: var(--muted);
+    font-stretch: 96%;
+  }
+  .row-arrow {
+    justify-self: end;
+    font-size: var(--step-1);
+    transition: transform 500ms var(--ease);
+  }
+  a.pack-row:hover .row-arrow {
+    transform: translateX(0.35rem) rotate(-45deg);
+  }
+  .is-quiet .row-name {
+    color: var(--muted);
+  }
+  @media (max-width: 52rem) {
+    .pack-row {
+      grid-template-columns: 2.5rem minmax(0, 1fr) 1.5rem;
+      row-gap: 0.6rem;
+    }
+    .row-engine {
+      display: none;
+    }
+    .pack-row .pill {
+      grid-column: 2;
+      grid-row: 2;
+      justify-self: start;
+    }
+    .row-arrow {
+      grid-column: 3;
+      grid-row: 1;
+    }
+  }
+
+  /* Pack cards */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 30rem), 1fr));
+    gap: clamp(1rem, 2vw, 1.75rem);
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+  }
+  .card {
+    position: relative;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--card);
+    text-decoration: none;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    transition:
+      transform 600ms var(--ease),
+      box-shadow 600ms var(--ease);
+  }
+  .card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(28rem circle at var(--mx, 50%) var(--my, 0%), rgb(255 255 255 / 0.22), transparent 55%);
+    opacity: 0;
+    transition: opacity 400ms;
+    pointer-events: none;
+  }
+  .card:hover {
+    box-shadow: 0 30px 60px -30px rgb(21 23 28 / 0.35);
+  }
+  .card:hover::after {
+    opacity: 1;
+  }
+  .card-media {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: var(--studio);
+  }
+  .card-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    scale: 1.02;
+    transition: scale 1200ms var(--ease);
+  }
+  .card:hover .card-media img {
+    scale: 1.07;
+  }
+  .card-body {
+    display: grid;
+    align-content: start;
+    gap: 0.75rem;
+    padding: 1.5rem 1.5rem 1.6rem;
+  }
+  .card h3 {
+    font-size: var(--step-2);
+    font-weight: 580;
+    font-stretch: 114%;
+    letter-spacing: -0.03em;
+  }
+  .card-sub {
+    display: block;
+    margin-top: 0.2rem;
+    font-size: var(--step-0);
+    font-weight: 450;
+    font-stretch: 96%;
+    letter-spacing: 0;
+    color: var(--muted);
+  }
+  .card p {
+    color: var(--ink-2);
+    max-width: 30rem;
+  }
+  .stats {
+    display: flex;
+    gap: 2rem;
+    margin: 0.5rem 0 0;
+    padding: 0.9rem 0 0;
+    list-style: none;
+    border-top: 1px solid var(--line);
+  }
+  .stats li {
+    display: grid;
+  }
+  .stats strong {
+    font-size: var(--step-3);
+    font-weight: 520;
+    font-stretch: 100%;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+  .stats span {
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+  .card-cta {
+    margin-top: 0.5rem;
+    font-weight: 560;
+  }
+  .card-cta span {
+    display: inline-block;
+    transition: transform 500ms var(--ease);
+  }
+  .card:hover .card-cta span {
+    transform: translateX(0.3rem);
+  }
+
+  /* Method */
+  .method {
+    padding-top: clamp(4rem, 9vw, 7rem);
+  }
+  .method-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+    gap: 2rem;
+    margin: 0;
     padding: 0;
     list-style: none;
   }
-  .shelf-item {
+  .method-list li {
     display: grid;
-    gap: 0.35rem;
     align-content: start;
+    gap: 0.6rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--ink);
+    transition: border-color 400ms;
   }
-  .shelf-link {
-    display: grid;
-    text-decoration: none;
+  .method-list li:hover {
+    border-color: var(--sun-deep);
   }
-  .shelf-title {
-    font-weight: 760;
-    font-stretch: 110%;
-    font-size: var(--step-1);
-    line-height: 1.1;
-  }
-  .shelf-sub {
-    font-size: var(--step--1);
-    font-weight: 560;
-  }
-  .shelf-meta {
-    display: grid;
-    gap: 0.1rem;
-    font-size: var(--step--1);
-    line-height: 1.35;
-  }
-  .shelf-engine {
-    font-weight: 680;
-  }
-  .shelf-item:not(.is-out) .shelf-title {
+  .method-list p {
     color: var(--ink-2);
   }
 
-  /* ---- live story ---------------------------------------------------------------------------- */
-  :global(.story-live).story {
-    height: calc((9.8 + 1) * 100svh);
-    padding-top: 0;
-  }
-  :global(.story-live) .stage {
-    position: sticky;
-    top: 0;
-    height: 100svh;
-    overflow: hidden;
-    contain: layout paint;
-  }
-  :global(.story-live) .stage-canvas {
-    display: block;
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-  }
-  :global(.story-live) .story-anchor {
-    display: block;
-    position: absolute;
-    left: 0;
-    top: calc(var(--at) * 100svh);
-    height: 1px;
-    width: 1px;
-  }
-  :global(.story-live) .beat-fallback {
-    display: none;
-  }
-  :global(.story-live) .beat {
-    position: absolute;
-    margin: 0;
-    padding: 0;
-    opacity: var(--o, 0);
-    pointer-events: none;
-  }
-  :global(.story-live) .beat.is-shown {
-    pointer-events: auto;
-  }
-
-  :global(.story-live) .beat-hero {
-    left: var(--gutter);
-    right: var(--gutter);
-    bottom: clamp(1.5rem, 9vh, 6.5rem);
-    max-width: min(46rem, 52vw);
-    transform: translateY(calc((1 - var(--o, 0)) * -2rem));
-  }
-  :global(.story-live) .hero-title span {
-    font-stretch: 62%;
-    letter-spacing: -0.01em;
-    transition:
-      font-stretch 1500ms cubic-bezier(0.2, 0.9, 0.1, 1),
-      letter-spacing 1500ms cubic-bezier(0.2, 0.9, 0.1, 1);
-  }
-  :global(.story-live) .hero-title span + span {
-    transition-delay: 120ms;
-  }
-  :global(.story-live.is-on) .hero-title span {
-    font-stretch: 125%;
-    letter-spacing: -0.035em;
-  }
-  :global(.story-live) .hero-cue {
-    display: block;
-    position: absolute;
-    left: 0;
-    bottom: calc(-1 * clamp(1.5rem, 9vh, 6.5rem) + 1rem);
-    font-size: var(--step--1);
-    font-weight: 600;
-    font-stretch: 92%;
-    opacity: 0.8;
-  }
-
-  :global(.story-live) .stage-clock {
-    display: flex;
-    gap: 0.4em;
-    position: absolute;
-    top: calc(var(--header-h) + 0.25rem);
-    right: var(--gutter);
-    z-index: 5;
-    margin: 0;
-    padding: 0.35rem 0.7rem 0.4rem;
-    background: var(--ink);
-    color: var(--sun);
-    border-radius: 6px;
-    font-weight: 700;
-    font-stretch: 85%;
-    font-size: var(--step-0);
-    letter-spacing: 0.02em;
-    opacity: 0;
-    transform: translateY(-0.5rem);
-    transition:
-      opacity 300ms,
-      transform 300ms;
-  }
-  :global(.story-live) .stage-clock span {
-    color: var(--paper);
-    font-weight: 560;
-  }
-  :global(.story-live) .stage-clock.is-shown {
-    opacity: 1;
-    transform: none;
-  }
-
-  :global(.story-live) .beat-panel {
-    left: var(--gutter);
-    bottom: clamp(1.25rem, 6vh, 4rem);
-    width: min(27rem, calc(100% - 2 * var(--gutter)));
-    padding: 1.35rem 1.5rem 1.25rem;
-    background: rgb(237 240 246 / 0.94);
-    border: 2px solid var(--ink);
-    border-radius: 14px;
-    box-shadow: 0 6px 0 var(--ink);
-    transform: translateY(calc((1 - var(--o, 0)) * 1.25rem));
-  }
-  :global(.story-live) .beat-panel h2 {
-    font-size: var(--step-2);
-    line-height: 1.04;
-    margin-bottom: 0.6rem;
-  }
-  :global(.story-live) .beat-panel p:not(.readout) {
-    font-size: var(--step-0);
-    line-height: 1.5;
-  }
-  :global(.story-live) .readout {
-    margin: 1rem -1.5rem -1.25rem;
-    padding: 0.6rem 1.5rem 0.7rem;
-    border-top: 2px solid var(--ink);
-    background: var(--ink);
-    color: var(--sun);
-    border-radius: 0 0 11px 11px;
-    font-size: var(--step--1);
-  }
-
-  :global(.story-live) .beat-library {
-    inset: 0;
-  }
-  /* the shelf itself is the canvas underneath: only the captions take the pointer */
-  :global(.story-live) .beat-library.is-shown {
-    pointer-events: none;
-  }
-  :global(.story-live) .beat-library.is-shown .shelf-item,
-  :global(.story-live) .beat-library.is-shown .library-head {
-    pointer-events: auto;
-  }
-  :global(.story-live) .library-head {
-    position: absolute;
-    left: var(--gutter);
-    top: calc(var(--header-h) + clamp(0.5rem, 3vh, 2rem));
-    max-width: 30rem;
-  }
-  :global(.story-live) .library-head h2 {
-    font-size: var(--step-4);
-  }
-  :global(.story-live) .shelf {
-    display: block;
-    margin: 0;
-  }
-  :global(.story-live) .shelf-item {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: calc(var(--slot, 12rem) * 0.92);
-    margin-left: calc(var(--slot, 12rem) * -0.46);
-    padding-top: 1.1rem;
-    text-align: center;
-    justify-items: center;
-    will-change: transform;
-  }
-  :global(.story-live) .shelf-link {
-    justify-items: center;
-    padding: 0.15rem 0.4rem;
-    border-radius: 6px;
-  }
-  :global(.story-live) .shelf-link:hover .shelf-title {
-    text-decoration: underline;
-    text-decoration-thickness: 2px;
-    text-underline-offset: 0.15em;
-  }
-  :global(.story-live) .shelf-title {
-    font-size: clamp(1rem, 0.7rem + 1vw, 1.375rem);
-  }
-  :global(.story-live) .shelf-engine {
-    display: inline-block;
-    justify-self: center;
-    margin-top: 0.35rem;
-    padding: 0.1rem 0.5rem 0.15rem;
-    border: 1.5px solid currentColor;
-    border-radius: 5px;
-    font-stretch: 92%;
-  }
-
-  @media (max-width: 760px), (orientation: portrait) {
-    :global(.story-live) .beat-hero {
-      max-width: none;
-      bottom: clamp(1.25rem, 5vh, 3rem);
-    }
-    :global(.story-live) .hero-lede {
-      font-size: var(--step-0);
-      margin-top: 1rem;
-    }
-    :global(.story-live) .hero-actions {
-      margin-top: 1.1rem;
-    }
-    :global(.story-live) .hero-cue {
-      display: none;
-    }
-    :global(.story-live) .beat-panel {
-      bottom: 1rem;
-      padding: 1rem 1.1rem 1rem;
-    }
-    :global(.story-live) .beat-panel p:not(.readout) {
-      font-size: 0.9375rem;
-    }
-    :global(.story-live) .readout {
-      margin: 0.8rem -1.1rem -1rem;
-      padding-inline: 1.1rem;
-    }
-    :global(.story-live) .shelf-sub,
-    :global(.story-live) .shelf-status {
-      display: none;
-    }
-    :global(.story-live) .shelf-title {
-      font-size: 0.875rem;
-    }
-    :global(.story-live) .shelf-engine {
-      font-size: 0.75rem;
-    }
-  }
-
-  :global(html.og) :global(.site-header nav),
-  :global(html.og) .hero-actions,
-  :global(html.og) .hero-cue {
-    display: none;
-  }
-  :global(html.og) .hero-title span {
-    transition: none;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    :global(.story-live) .hero-title span {
-      transition: none;
-      font-stretch: 125%;
-    }
-    :global(.story-live) .beat,
-    :global(.story-live) .stage-clock {
-      transition: none;
-      transform: none;
-    }
-  }
-
-  /* support */
+  /* Help */
   .help {
-    background: var(--paper);
-    padding-block: clamp(3.5rem, 8vw, 6.5rem);
+    padding-block: clamp(4rem, 9vw, 7rem);
   }
-  .help-grid {
+  .help-inner {
     display: grid;
-    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) auto;
-    gap: 1.5rem 3rem;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 26rem) auto;
     align-items: end;
+    gap: 1.5rem 3rem;
+    padding: clamp(1.75rem, 4vw, 3rem);
+    border-radius: 20px;
+    background: var(--ink);
+    color: var(--paper);
+    --focus: var(--sun);
   }
-  .help p {
-    max-width: 30rem;
+  .help-inner p {
+    color: rgb(243 242 238 / 0.72);
   }
   @media (max-width: 60rem) {
-    .help-grid {
+    .help-inner {
       grid-template-columns: 1fr;
       align-items: start;
     }
-    .help-grid .btn {
+    .help-inner .btn {
       justify-self: start;
     }
   }

@@ -4,21 +4,25 @@ const { current = "" } = Astro.props;
 const links = [
   { href: "/#packs", label: "Packs", id: "packs" },
   { href: "/packs/everyday-cars/#showroom", label: "Showroom", id: "showroom" },
+  { href: "/packs/helicopters/", label: "Helicopters", id: "helicopters" },
   { href: "/contact.html", label: "Support", id: "support" },
 ];
 ---
 <header class="site-header">
-  <a class="brand" href="/" aria-label="Saturday Cartridge, home">
+  <a class="brand" href="/" aria-label="Saturday Cartridge, home" data-scramble>
     <Mark class="brand-mark" />
-    <span class="brand-name">Saturday Cartridge</span>
+    <span class="brand-name" data-scramble-text>Saturday Cartridge</span>
   </a>
   <nav aria-label="Main">
     <ul>
       {links.map((l) => (
-        <li><a href={l.href} aria-current={current === l.id ? "page" : undefined}>{l.label}</a></li>
+        <li>
+          <a href={l.href} aria-current={current === l.id ? "page" : undefined} data-scramble>{l.label}</a>
+        </li>
       ))}
     </ul>
   </nav>
+  <time class="clock label num" data-clock aria-label="Local time">Sat 06:20</time>
 </header>
 
 <style>
@@ -26,10 +30,10 @@ const links = [
     position: absolute;
     inset: 0 0 auto;
     z-index: 30;
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr auto auto;
     align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
+    gap: 1.5rem;
     height: var(--header-h);
     padding-inline: var(--gutter);
     pointer-events: none;
@@ -38,47 +42,90 @@ const links = [
     pointer-events: auto;
   }
   .brand {
+    justify-self: start;
     display: inline-flex;
     align-items: center;
     gap: 0.6rem;
     text-decoration: none;
-    font-weight: 740;
+    font-weight: 620;
     font-stretch: 112%;
-    letter-spacing: -0.015em;
+    letter-spacing: -0.02em;
   }
   .brand :global(.brand-mark) {
-    width: 1.55rem;
+    width: 1.35rem;
     height: auto;
-    transform: rotate(-6deg);
-    transition: transform 240ms cubic-bezier(0.3, 1.6, 0.5, 1);
+    transform: rotate(-8deg);
+    transition: transform 600ms var(--spring);
   }
   .brand:hover :global(.brand-mark) {
-    transform: rotate(0deg) translateY(-2px);
+    transform: rotate(0deg) translateY(-2px) scale(1.08);
   }
   ul {
     display: flex;
-    gap: clamp(0.25rem, 1.5vw, 1.25rem);
+    gap: clamp(0.1rem, 1vw, 0.75rem);
     margin: 0;
     padding: 0;
     list-style: none;
   }
   nav a {
+    position: relative;
     display: block;
-    padding: 0.5rem 0.35rem;
-    font-weight: 600;
-    font-stretch: 104%;
+    padding: 0.45rem 0.55rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    font-stretch: 96%;
     text-decoration: none;
-    background-image: linear-gradient(currentColor, currentColor);
-    background-size: 0 2px;
-    background-position: 0 calc(100% - 0.3rem);
-    background-repeat: no-repeat;
-    transition: background-size 200ms ease-out;
+    border-radius: 999px;
+    transition: background-color 250ms;
   }
-  nav a:hover,
+  nav a::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0.15rem;
+    width: 0.25rem;
+    height: 0.25rem;
+    border-radius: 50%;
+    background: currentColor;
+    transform: translateX(-50%) scale(0);
+    transition: transform 400ms var(--spring);
+  }
+  nav a:hover::after {
+    transform: translateX(-50%) scale(1);
+  }
   nav a[aria-current="page"] {
-    background-size: 100% 2px;
+    background: var(--ink);
+    color: var(--paper);
   }
-  @media (max-width: 34rem) {
+  nav a[aria-current="page"]::after {
+    display: none;
+  }
+  .clock {
+    min-width: 4.5rem;
+    text-align: right;
+    color: inherit;
+    opacity: 0.7;
+  }
+  .clock :global(.clock-colon) {
+    animation: blink 2s steps(1) infinite;
+  }
+  .clock[data-saturday="yes"] :global(.clock-day) {
+    color: var(--sun-deep);
+  }
+  @keyframes blink {
+    50% {
+      opacity: 0;
+    }
+  }
+  @media (max-width: 52rem) {
+    .clock {
+      display: none;
+    }
+    .site-header {
+      grid-template-columns: 1fr auto;
+    }
+  }
+  @media (max-width: 40rem) {
     .brand-name {
       position: absolute;
       width: 1px;
@@ -86,11 +133,9 @@ const links = [
       overflow: hidden;
       clip-path: inset(50%);
     }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .brand :global(.brand-mark),
     nav a {
-      transition: none;
+      padding-inline: 0.4rem;
+      font-size: 0.875rem;
     }
   }
 </style>

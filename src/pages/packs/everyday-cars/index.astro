@@ -23,11 +23,11 @@ const gallery = [
 >
   <main id="main">
     <section class="showroom" id="showroom" aria-labelledby="pack-title" data-vehicle="Hatchback">
-      <canvas class="showroom-canvas" tabindex="0" aria-label="3D view of the selected vehicle. Drag to turn it, or use the left and right arrow keys to change vehicle."></canvas>
+      <canvas class="showroom-canvas" data-cursor="Drag" tabindex="0" aria-label="3D view of the selected vehicle. Drag to turn it, or use the left and right arrow keys to change vehicle."></canvas>
 
       <div class="sr-head">
         <h1 id="pack-title"><span class="sr-name">Everyday Cars</span> <span class="sr-sub">Low Poly Vehicle Pack</span></h1>
-        <p class="sr-status">{pack.status}</p>
+        <p class="pill sr-status">{pack.status}</p>
       </div>
 
       <nav class="sr-vehicles" aria-label="Vehicles">
@@ -128,7 +128,7 @@ const gallery = [
             <tbody>
               {vehicles.map((v) => (
                 <tr>
-                  <th scope="row"><a href="#showroom" data-show-vehicle={v.id}>{v.title}</a></th>
+                  <th scope="row"><a class="link" href="#showroom" data-show-vehicle={v.id}>{v.title}</a></th>
                   <td class="r num">{n(v.tris[0])}</td>
                   <td class="r num">{n(v.tris[1])}</td>
                   <td class="r num">{n(v.tris[2])}</td>
@@ -143,7 +143,7 @@ const gallery = [
 
       <div class="wrap gallery">
         {gallery.map((g, i) => (
-          <figure class={i === 0 ? "wide" : undefined}>
+          <figure class={i === 0 ? "wide" : undefined} data-reveal style={`--i: ${i}`}>
             <img
               src={`/assets/img/${g.src}-${g.w === 1800 ? 1800 : 1200}.webp`}
               srcset={g.w === 1800 ? `/assets/img/${g.src}-960.webp 960w, /assets/img/${g.src}-1800.webp 1800w` : `/assets/img/${g.src}-640.webp 640w, /assets/img/${g.src}-1200.webp 1200w`}
@@ -167,10 +167,10 @@ const gallery = [
             <li>The pack is art only: no driving physics or vehicle controller. Wheels and the steering wheel have correct pivots for your own controller.</li>
           </ul>
         </div>
-        <div class="notes-cta">
-          <p class="sr-status">{pack.status}</p>
+        <div class="notes-cta" data-cursor-dark>
+          <p class="pill sr-status">{pack.status}</p>
           <p>Questions before you buy, or help after? Support answers within two business days.</p>
-          <a class="btn btn-sun" href="/contact.html">Contact support</a>
+          <a class="btn btn-sun" href="/contact.html" data-magnetic>Contact support <span class="arrow" aria-hidden="true">→</span></a>
         </div>
       </div>
     </section>
@@ -187,7 +187,7 @@ const gallery = [
   .showroom {
     position: relative;
     padding: calc(var(--header-h) + 1rem) var(--gutter) 2rem;
-    background: var(--slate);
+    background: #e4e3dd;
     display: grid;
     gap: 1.5rem;
   }
@@ -208,9 +208,9 @@ const gallery = [
   }
   .sr-name {
     font-size: var(--step-4);
-    font-weight: 820;
-    font-stretch: 122%;
-    letter-spacing: -0.03em;
+    font-weight: 560;
+    font-stretch: 120%;
+    letter-spacing: -0.045em;
   }
   .sr-sub {
     margin-top: 0.35rem;
@@ -220,15 +220,7 @@ const gallery = [
     letter-spacing: -0.01em;
   }
   .sr-status {
-    display: inline-block;
     margin-top: 0.85rem;
-    padding: 0.25rem 0.65rem 0.3rem;
-    background: var(--ink);
-    color: var(--sun);
-    border-radius: 6px;
-    font-size: var(--step--1);
-    font-weight: 650;
-    font-stretch: 92%;
   }
 
   /* live showroom: canvas fills the screen, controls sit on it like a garage menu */
@@ -267,7 +259,7 @@ const gallery = [
   }
   /* the section matches the studio backdrop, which shows around the canvas on small screens */
   :global(.showroom-live[data-mood="morning"]) {
-    background: #b3bcd5;
+    background: #dcdfe5;
   }
   :global(.showroom-live[data-mood="dusk"]) {
     background: #a98593;
@@ -303,9 +295,10 @@ const gallery = [
   .sr-vehicles button {
     width: 100%;
     padding: 0.42rem 0.7rem;
-    border: 2px solid transparent;
-    border-radius: 8px;
-    background: rgb(237 240 246 / 0.82);
+    border: 1px solid transparent;
+    border-radius: 999px;
+    background: rgb(251 250 247 / 0.7);
+    backdrop-filter: blur(8px);
     color: var(--ink);
     font: inherit;
     font-size: 0.9375rem;
@@ -314,13 +307,16 @@ const gallery = [
     text-align: left;
     cursor: pointer;
   }
+  .sr-vehicles button {
+    transition: background-color 250ms, padding 450ms var(--ease);
+  }
   .sr-vehicles button:hover {
-    border-color: var(--ink);
+    border-color: var(--line-2);
+    padding-left: 1rem;
   }
   .sr-vehicles button[aria-pressed="true"] {
-    background: var(--sun);
-    border-color: var(--ink);
-    box-shadow: 0 3px 0 var(--ink);
+    background: var(--ink);
+    color: var(--paper);
   }
 
   :global(.showroom-live) .sr-bottom {
@@ -338,10 +334,10 @@ const gallery = [
     justify-items: center;
     gap: 0.4rem;
     padding: 0.7rem 0.9rem 0.8rem;
-    background: rgb(237 240 246 / 0.94);
-    border: 2px solid var(--ink);
-    border-radius: 14px;
-    box-shadow: 0 5px 0 var(--ink);
+    background: rgb(251 250 247 / 0.86);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    backdrop-filter: blur(12px);
   }
   .swatches {
     display: flex;
@@ -353,14 +349,14 @@ const gallery = [
     width: 1.75rem;
     height: 1.75rem;
     border-radius: 50%;
-    border: 2px solid var(--ink);
+    border: 1px solid rgb(21 23 28 / 0.25);
     background: var(--c);
     cursor: pointer;
     padding: 0;
-    transition: transform 120ms;
+    transition: transform 400ms var(--spring);
   }
   .swatch:hover {
-    transform: translateY(-2px);
+    transform: translateY(-3px) scale(1.12);
   }
   .swatch[aria-pressed="true"] {
     box-shadow:
@@ -383,7 +379,7 @@ const gallery = [
     padding: 0.4rem 0.8rem;
     background: var(--ink);
     color: var(--paper);
-    border-radius: 8px;
+    border-radius: 999px;
     font-size: var(--step--1);
   }
   .sr-readout :global(strong) {
@@ -398,10 +394,10 @@ const gallery = [
     top: calc(var(--header-h) + 0.5rem);
     width: 15.5rem;
     padding: 1rem 1rem 1.1rem;
-    background: rgb(237 240 246 / 0.94);
-    border: 2px solid var(--ink);
-    border-radius: 14px;
-    box-shadow: 0 5px 0 var(--ink);
+    background: rgb(251 250 247 / 0.86);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    backdrop-filter: blur(12px);
   }
   .sr-group {
     display: grid;
@@ -411,16 +407,16 @@ const gallery = [
     display: grid;
     grid-auto-flow: column;
     grid-auto-columns: 1fr;
-    border: 2px solid var(--ink);
-    border-radius: 9px;
+    border: 1px solid var(--line-2);
+    border-radius: 999px;
     overflow: hidden;
   }
   .seg button {
     display: grid;
     padding: 0.4rem 0.2rem;
     border: 0;
-    border-left: 2px solid var(--ink);
-    background: var(--paper);
+    border-left: 1px solid var(--line);
+    background: transparent;
     color: var(--ink);
     font: inherit;
     font-size: 0.8125rem;
@@ -431,11 +427,15 @@ const gallery = [
   .seg button:first-child {
     border-left: 0;
   }
+  .seg button {
+    transition: background-color 250ms, color 250ms;
+  }
   .seg button:hover {
-    background: var(--white);
+    background: rgb(255 201 74 / 0.35);
   }
   .seg button[aria-pressed="true"] {
-    background: var(--sun);
+    background: var(--ink);
+    color: var(--paper);
   }
   .seg .tris {
     font-size: 0.6875rem;
@@ -448,9 +448,9 @@ const gallery = [
   }
   .chip {
     padding: 0.3rem 0.6rem;
-    border: 2px solid var(--ink);
-    border-radius: 7px;
-    background: var(--paper);
+    border: 1px solid var(--line-2);
+    border-radius: 999px;
+    background: transparent;
     color: var(--ink);
     font: inherit;
     font-size: 0.8125rem;
@@ -459,11 +459,15 @@ const gallery = [
     cursor: pointer;
     justify-self: start;
   }
+  .chip {
+    transition: background-color 250ms, color 250ms, border-color 250ms;
+  }
   .chip:hover {
-    background: var(--white);
+    border-color: var(--sun-deep);
   }
   .chip[aria-pressed="true"] {
     background: var(--ink);
+    border-color: var(--ink);
     color: var(--sun);
   }
   :global(.showroom-live.is-loading) .showroom-canvas {
@@ -544,14 +548,14 @@ const gallery = [
   }
   .facts {
     margin: 0;
-    border-top: 2px solid var(--ink);
+    border-top: 1px solid var(--ink);
   }
   .facts div {
     display: grid;
     grid-template-columns: 10rem 1fr;
     gap: 1rem;
     padding: 0.7rem 0;
-    border-bottom: 1px solid var(--mist);
+    border-bottom: 1px solid var(--line);
   }
   .facts dt {
     font-weight: 680;
@@ -583,21 +587,24 @@ const gallery = [
   th,
   td {
     padding: 0.55rem 0.75rem;
-    border-bottom: 1px solid var(--mist);
+    border-bottom: 1px solid var(--line);
     text-align: left;
     font-weight: 450;
   }
   thead th {
-    border-bottom: 2px solid var(--ink);
-    font-weight: 700;
-    font-stretch: 94%;
-    font-size: var(--step--1);
+    border-bottom: 1px solid var(--ink);
+    font-weight: 600;
+    font-stretch: 72%;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-size: var(--step--2);
   }
   tbody th a {
     font-weight: 650;
   }
   tbody tr:hover {
-    background: rgb(255 201 74 / 0.22);
+    background: var(--card);
   }
   .r {
     text-align: right;
@@ -617,8 +624,7 @@ const gallery = [
   figure img {
     width: 100%;
     height: auto;
-    border-radius: 12px;
-    border: 2px solid var(--ink);
+    border-radius: 14px;
   }
   figcaption {
     margin-top: 0.5rem;
@@ -643,11 +649,16 @@ const gallery = [
     gap: 1rem;
     justify-items: start;
     align-content: start;
-    padding: 1.5rem;
-    border: 2px solid var(--ink);
-    border-radius: 14px;
-    background: var(--white);
-    box-shadow: 0 5px 0 var(--ink);
+    padding: 1.75rem;
+    border-radius: 20px;
+    background: var(--ink);
+    color: var(--paper);
+    --focus: var(--sun);
+  }
+  .notes-cta .pill {
+    background: transparent;
+    color: var(--paper);
+    border-color: rgb(243 242 238 / 0.25);
   }
   .notes-cta .sr-status {
     margin: 0;

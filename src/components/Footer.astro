@@ -1,65 +1,111 @@
 ---
 import Mark from "./Mark.astro";
 const year = new Date().getFullYear();
+const email = "ifeonu95@gmail.com";
 ---
 <footer class="site-footer">
-  <div class="wrap footer-grid">
-    <a class="brand" href="/" aria-label="Saturday Cartridge, home"><Mark tile class="foot-mark" /></a>
+  <div class="wrap footer-top">
     <p class="sign-off">Game-ready 3D assets, made on Saturdays and most other days.</p>
+    <a class="mail" href={`mailto:${email}`} data-copy={email} data-cursor="Copy">
+      <span class="label">Say hello</span>
+      <span class="mail-address">{email}</span>
+    </a>
+  </div>
+  <div class="wrap footer-bottom">
+    <a class="brand" href="/" aria-label="Saturday Cartridge, home"><Mark class="foot-mark" /></a>
     <nav aria-label="Footer">
-      <a href="/#packs">Packs</a>
-      <a href="/packs/everyday-cars/#showroom">Showroom</a>
-      <a href="/contact.html">Support</a>
-      <a href="mailto:ifeonu95@gmail.com">Email</a>
+      <a class="link" href="/#packs">Packs</a>
+      <a class="link" href="/packs/everyday-cars/#showroom">Showroom</a>
+      <a class="link" href="/packs/helicopters/">Helicopters</a>
+      <a class="link" href="/contact.html">Support</a>
     </nav>
-    <small>© {year} Saturday Cartridge</small>
+    <small class="label">© {year} Saturday Cartridge</small>
   </div>
 </footer>
 
 <style>
   .site-footer {
-    background: var(--ink);
-    color: var(--paper);
-    padding-block: 3.5rem 2.5rem;
-    --focus: var(--sun);
+    padding-block: 4rem 2rem;
+    border-top: 1px solid var(--line);
+    background: var(--paper);
   }
-  .footer-grid {
+  .footer-top {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 2rem;
+    padding-bottom: 3rem;
+  }
+  .sign-off {
+    max-width: 22rem;
+    font-size: var(--step-1);
+    font-stretch: 104%;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+    color: var(--ink-2);
+  }
+  .mail {
+    display: grid;
+    gap: 0.35rem;
+    justify-items: end;
+    text-decoration: none;
+  }
+  .mail-address {
+    font-size: var(--step-3);
+    font-weight: 560;
+    font-stretch: 112%;
+    letter-spacing: -0.035em;
+    line-height: 1;
+    background-image: linear-gradient(var(--sun), var(--sun));
+    background-size: 0% 0.32em;
+    background-position: 0 88%;
+    background-repeat: no-repeat;
+    transition: background-size 600ms var(--ease);
+  }
+  .mail:hover .mail-address,
+  .mail:focus-visible .mail-address,
+  .mail:global(.is-copied) .mail-address {
+    background-size: 100% 0.32em;
+  }
+  .footer-bottom {
     display: grid;
     grid-template-columns: auto 1fr auto;
     align-items: center;
-    gap: 1.25rem 2rem;
+    gap: 1rem 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
   }
   :global(.foot-mark) {
-    width: 3rem;
-    height: 3rem;
+    width: 1.4rem;
+    height: auto;
+    transition: transform 700ms var(--spring);
   }
-  .sign-off {
-    color: var(--mist);
-    max-width: 30rem;
+  .brand:hover :global(.foot-mark) {
+    transform: rotate(-360deg);
   }
   nav {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.25rem 1.25rem;
+    gap: 0.25rem 1.5rem;
   }
   nav a {
-    text-decoration: none;
-    font-weight: 600;
-    padding-block: 0.4rem;
-  }
-  nav a:hover {
-    text-decoration: underline;
-  }
-  small {
-    grid-column: 1 / -1;
-    color: var(--slate);
-    font-size: var(--step--1);
+    font-size: 0.9375rem;
+    font-weight: 500;
   }
   @media (max-width: 48rem) {
-    .footer-grid {
+    .footer-top {
+      grid-template-columns: 1fr;
+    }
+    .mail {
+      justify-items: start;
+    }
+    .mail-address {
+      font-size: var(--step-2);
+    }
+    .footer-bottom {
       grid-template-columns: auto 1fr;
     }
-    nav {
+    small {
       grid-column: 1 / -1;
     }
   }

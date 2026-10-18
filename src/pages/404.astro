@@ -4,7 +4,7 @@ import Mark from "../components/Mark.astro";
 ---
 <Base title="Page not found" description="This page could not be found.">
   <main id="main" class="lost">
-    <button type="button" class="cart" aria-label="Blow on the cartridge">
+    <button type="button" class="cart" aria-label="Blow on the cartridge" data-cursor="Blow">
       <Mark class="cart-mark" />
     </button>
     <h1>This page didn't load</h1>
@@ -60,10 +60,10 @@ import Mark from "../components/Mark.astro";
   }
   h1 {
     font-size: var(--step-4);
-    font-weight: 820;
-    font-stretch: 120%;
-    letter-spacing: -0.03em;
-    line-height: 0.95;
+    font-weight: 560;
+    font-stretch: 118%;
+    letter-spacing: -0.05em;
+    line-height: 0.9;
   }
   p {
     max-width: 32rem;

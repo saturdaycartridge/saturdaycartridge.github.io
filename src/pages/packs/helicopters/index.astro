@@ -1,0 +1,892 @@
+---
+import Base from "../../../layouts/Base.astro";
+import fleet from "../../../data/helicopters.json";
+import { packs } from "../../../data/packs.js";
+
+const pack = packs.find((p) => p.id === "helicopters");
+const n = (x) => x.toLocaleString("en-GB");
+const img = (id, view, w) => `/assets/img/helicopters/${id}-${view}-${w}.webp`;
+const first = fleet[0];
+const minTris = Math.min(...fleet.map((h) => h.tris[0]));
+const maxTris = Math.max(...fleet.map((h) => h.tris[0]));
+const classes = ["Civil", "Utility", "Attack"];
+const views = [
+  { id: "front34", label: "Front ¾" },
+  { id: "side", label: "Side" },
+  { id: "rear34", label: "Rear ¾" },
+];
+const features = [
+  { t: "Cockpits with crew", d: "Seats, panels, controls and static instruments behind tinted glass, with seated pilots in every aircraft." },
+  { t: "Rotors that spin up", d: "Separate main and tail rotors on correct pivots, and blur discs that fade in with a single Power value." },
+  { t: "Paint without textures", d: "A procedural URP paint shader draws mottle, streaks, camouflage, belly bands, grime and soot. A new scheme is a duplicated material." },
+  { t: "Three LODs each", d: "A ready LOD Group per aircraft: 60,000 to 94,000 triangles at LOD0, cockpit and crew included, and 10,700 to 16,800 at LOD2." },
+  { t: "Lights that bloom", d: "Navigation lights, beacons and screens in HDR, so they glow with your post-processing." },
+  { t: "A studio to show them in", d: "A showcase scene with the whole fleet on a plain studio floor and an orbiting camera that spools up each aircraft in turn." },
+];
+const schemes = [
+  { id: "AssaultGunship", caption: "Desert camouflage over a pale belly" },
+  { id: "RescueTwin", caption: "Rescue red under white" },
+  { id: "EscortAttack", caption: "Two-tone green-grey camouflage" },
+  { id: "LightUtility", caption: "Civil white with a teal band" },
+];
+const gallery = [
+  { src: "lods", w: 1600, h: 900, alt: "The same dark green utility helicopter three times side by side, at full, medium and low detail.", caption: "LOD0, LOD1 and LOD2 side by side." },
+  { src: "cockpit", w: 1600, h: 900, alt: "A close look through the canopy of a tandem gunship at its two seated crew and cockpit panels.", caption: "Crew and cockpit behind the canopy glass." },
+  { src: "fleet", w: 1600, h: 900, alt: "The full fleet of twelve helicopters spread over a plain blue-grey studio floor, seen from above.", caption: "The whole fleet in the showcase scene." },
+];
+const notify = "mailto:ifeonu95@gmail.com?subject=" + encodeURIComponent("Helicopter Pack launch");
+---
+<Base
+  title="RotorTrail, Helicopter Pack"
+  description="Twelve detailed helicopters for Unity URP with cockpits, crew, spinning rotors, three LODs and procedural paint. Coming soon to the Unity Asset Store."
+  current="helicopters"
+  image="/assets/img/helicopters/og.jpg"
+>
+  <main id="main">
+    <section class="hero wrap" aria-labelledby="pack-title">
+      <div class="hero-head">
+        <span class="label" data-reveal>{pack.no} <span aria-hidden="true">/</span> {pack.engine} <span aria-hidden="true">/</span> URP</span>
+        <h1 id="pack-title" data-reveal style="--i: 1">
+          <span class="name">{pack.title}</span>
+          <span class="sub">{pack.subtitle}</span>
+        </h1>
+        <div class="hero-side" data-reveal style="--i: 2">
+          <span class="pill">{pack.status}</span>
+          <p>{pack.summary}</p>
+          <div class="hero-actions">
+            <a class="btn" href="#hangar" data-magnetic>Walk around them <span class="arrow" aria-hidden="true">↓</span></a>
+            <a class="btn btn-ghost" href={notify} data-magnetic>Tell me when it lands</a>
+          </div>
+        </div>
+      </div>
+      <figure class="hero-media" data-reveal style="--i: 3">
+        <img
+          src="/assets/img/helicopters/lineup-1600.webp"
+          srcset="/assets/img/helicopters/lineup-800.webp 800w, /assets/img/helicopters/lineup-1600.webp 1600w"
+          sizes="(min-width: 84rem) 80rem, 100vw"
+          width="1600"
+          height="900"
+          fetchpriority="high"
+          alt="Six helicopters in a shallow V on a plain blue-grey studio floor: a red firefighter, a desert-camouflage gunship, a dark green gunship, a white and red rescue twin with its rotor spinning, an olive tandem-rotor transport and a dark green utility helicopter."
+        />
+      </figure>
+    </section>
+
+    <section class="hangar" id="hangar" aria-labelledby="hangar-title" data-aircraft={first.id}>
+      <div class="wrap hangar-grid">
+        <div class="hangar-head">
+          <span class="label">Walkaround</span>
+          <h2 id="hangar-title">Twelve aircraft, one look</h2>
+          <p>Pick an aircraft, drag the picture to walk around it, and spin its rotors up. Every image is a capture from Unity, on the same plain studio floor as Everyday Cars.</p>
+        </div>
+
+        <nav class="roster" aria-label="Aircraft">
+          {classes.map((c) => (
+            <div class="roster-group">
+              <span class="label">{c}</span>
+              <ul role="list">
+                {fleet.filter((h) => h.cls === c).map((h) => (
+                  <li>
+                    <button type="button" data-pick={h.id} aria-pressed={h.id === first.id ? "true" : "false"}>
+                      <span>{h.title}</span>
+                      <span class="tick" aria-hidden="true"></span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </nav>
+
+        <div class="stage-wrap">
+          <div class="stage" tabindex="0" role="img" data-stage data-cursor="Drag" aria-label={`${first.title}, front three-quarter view. Drag or use the left and right arrow keys to turn it.`}>
+            <img class="frame is-shown" src={img(first.id, "front34", 1280)} srcset={`${img(first.id, "front34", 720)} 720w, ${img(first.id, "front34", 1280)} 1280w`} sizes="(min-width: 64rem) 52rem, 100vw" width="1280" height="720" alt="" draggable="false" />
+            <img class="frame" alt="" width="1280" height="720" draggable="false" sizes="(min-width: 64rem) 52rem, 100vw" />
+            <span class="stage-hint label" aria-hidden="true">Drag to turn</span>
+          </div>
+          <div class="stage-bar">
+            <div class="views" role="group" aria-label="View">
+              {views.map((v, i) => (
+                <button type="button" data-view={v.id} aria-pressed={i === 0 ? "true" : "false"}>{v.label}</button>
+              ))}
+            </div>
+            <label class="switch">
+              <input type="checkbox" data-spin />
+              <span class="switch-track" aria-hidden="true"><span class="switch-knob"></span></span>
+              <span class="rotor" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><g><rect x="11" y="1" width="2" height="22" rx="1" /><rect x="1" y="11" width="22" height="2" rx="1" /></g><circle cx="12" cy="12" r="2.6" /></svg>
+              </span>
+              Spin up rotors
+            </label>
+          </div>
+        </div>
+
+        <div class="readout" aria-live="polite">
+          <span class="label" data-r="cls">{first.cls}</span>
+          <h3 data-r="title">{first.title}</h3>
+          <p data-r="line">{first.line}</p>
+          <dl>
+            <div><dt class="label">LOD0</dt><dd class="num" data-r="t0">{n(first.tris[0])}</dd></div>
+            <div><dt class="label">LOD1</dt><dd class="num" data-r="t1">{n(first.tris[1])}</dd></div>
+            <div><dt class="label">LOD2</dt><dd class="num" data-r="t2">{n(first.tris[2])}</dd></div>
+            <div class="wide"><dt class="label">Body L × W × H</dt><dd class="num" data-r="size">{first.length.toFixed(2)} × {first.width.toFixed(2)} × {first.height.toFixed(2)} m</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap features" aria-labelledby="features-title">
+      <div class="section-head">
+        <span class="label">In the box</span>
+        <h2 id="features-title">Ready for a scene, not a cleanup</h2>
+      </div>
+      <ol class="feature-list" role="list">
+        {features.map((f, i) => (
+          <li data-reveal style={`--i: ${i % 3}`}>
+            <span class="label num">0{i + 1}</span>
+            <h3>{f.t}</h3>
+            <p>{f.d}</p>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="wrap schemes" aria-labelledby="schemes-title">
+      <div class="section-head">
+        <span class="label">Paint</span>
+        <h2 id="schemes-title">Schemes drawn by a shader</h2>
+      </div>
+      <p class="schemes-note" data-reveal>
+        No texture sets: one material per surface holds the colours, camouflage, belly line, grime and exhaust soot, so the
+        pack stays small and every scheme is yours to change.
+      </p>
+      <ul class="scheme-strip" role="list">
+        {schemes.map((s, i) => {
+          const h = fleet.find((x) => x.id === s.id);
+          return (
+            <li data-reveal style={`--i: ${i}`}>
+              <button type="button" class="scheme" data-jump={s.id} data-cursor="Inspect">
+                <span class="scheme-media"><img src={img(s.id, "side", 720)} width="720" height="405" loading="lazy" alt={`${h.title}, side view: ${s.caption.toLowerCase()}.`} /></span>
+                <span class="scheme-cap"><strong>{h.title}</strong> {s.caption}</span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+
+    <section class="wrap gallery" aria-label="More captures">
+      {gallery.map((g, i) => (
+        <figure class={i === 2 ? "wide" : undefined} data-reveal style={`--i: ${i}`}>
+          <img src={`/assets/img/helicopters/${g.src}-1600.webp`} srcset={`/assets/img/helicopters/${g.src}-800.webp 800w, /assets/img/helicopters/${g.src}-1600.webp 1600w`} sizes={i === 2 ? "(min-width: 84rem) 80rem, 100vw" : "(min-width: 48rem) 50vw, 100vw"} width={g.w} height={g.h} loading="lazy" alt={g.alt} />
+          <figcaption class="label">{g.caption}</figcaption>
+        </figure>
+      ))}
+    </section>
+
+    <section class="wrap specs" aria-labelledby="specs-title">
+      <div class="section-head">
+        <span class="label">Specs</span>
+        <h2 id="specs-title">The fleet in numbers</h2>
+      </div>
+      <dl class="facts">
+        <div data-reveal><dt class="label">Aircraft</dt><dd><strong class="num" data-count="12">12</strong> with 3 LODs each</dd></div>
+        <div data-reveal style="--i: 1"><dt class="label">Triangles at LOD0</dt><dd class="num">{n(minTris)} to {n(maxTris)}</dd></div>
+        <div data-reveal style="--i: 2"><dt class="label">Render pipeline</dt><dd>URP 17.6 or newer</dd></div>
+        <div data-reveal style="--i: 3"><dt class="label">Unity</dt><dd>6000.6 or newer</dd></div>
+      </dl>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Aircraft</th>
+              <th scope="col">Class</th>
+              <th scope="col" class="r">LOD0</th>
+              <th scope="col" class="r">LOD1</th>
+              <th scope="col" class="r">LOD2</th>
+              <th scope="col" class="r">Body L × W × H</th>
+            </tr>
+          </thead>
+          <tbody>
+            {fleet.map((h) => (
+              <tr>
+                <th scope="row"><a class="link" href="#hangar" data-jump={h.id} data-preview={img(h.id, "front34", 720)}>{h.title}</a></th>
+                <td>{h.cls}</td>
+                <td class="r num">{n(h.tris[0])}</td>
+                <td class="r num">{n(h.tris[1])}</td>
+                <td class="r num">{n(h.tris[2])}</td>
+                <td class="r num">{h.length.toFixed(2)} × {h.width.toFixed(2)} × {h.height.toFixed(2)} m</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="table-note">Triangles as Unity imports them, for the whole aircraft at each level: cockpit, crew and every blade included.</p>
+    </section>
+
+    <section class="wrap notes" aria-labelledby="notes-title">
+      <div>
+        <h2 id="notes-title" class="notes-title">Good to know</h2>
+        <ul>
+          <li>URP only. The Built-in render pipeline and HDRP are not supported.</li>
+          <li>Art only: there is no flight controller, weapons logic or audio. Rotors spin through an optional component with no physics.</li>
+          <li>Doors and canopies are part of the body and do not open. The crew are static meshes without a rig.</li>
+          <li>Cockpit instruments are static artwork, not working gauges.</li>
+          <li>Each part is its own renderer: 86 to 111 draw calls per aircraft. Plan to combine meshes for large fleets or mobile.</li>
+        </ul>
+      </div>
+      <div class="notes-cta" data-cursor-dark>
+        <span class="pill">{pack.status}</span>
+        <p>Want a note the day it is on the store, or have a question first? Email us and we will reply within two business days.</p>
+        <a class="btn btn-sun" href={notify} data-magnetic>Tell me when it lands <span class="arrow" aria-hidden="true">→</span></a>
+      </div>
+    </section>
+  </main>
+</Base>
+
+<script>
+  import { startHangar } from "../../../scripts/hangar.js";
+  import fleet from "../../../data/helicopters.json";
+  const el = document.getElementById("hangar");
+  if (el) startHangar(el, fleet);
+</script>
+
+<style>
+  .hero {
+    padding-top: calc(var(--header-h) + clamp(2rem, 6vh, 4rem));
+  }
+  .hero-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 24rem);
+    align-items: end;
+    gap: 1.25rem 3rem;
+  }
+  .hero-head > .label {
+    grid-column: 1 / -1;
+  }
+  h1 {
+    display: grid;
+  }
+  .name {
+    font-size: clamp(3.25rem, 1rem + 9vw, 9.5rem);
+    font-weight: 560;
+    font-stretch: 120%;
+    letter-spacing: -0.055em;
+    line-height: 0.82;
+    margin-left: -0.05em;
+  }
+  .sub {
+    margin-top: 0.6rem;
+    font-size: var(--step-2);
+    font-weight: 440;
+    font-stretch: 100%;
+    letter-spacing: -0.02em;
+    color: var(--muted);
+  }
+  .hero-side {
+    display: grid;
+    gap: 1rem;
+    justify-items: start;
+    padding-bottom: 0.5rem;
+  }
+  .hero-side p {
+    color: var(--ink-2);
+  }
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  .hero-media {
+    margin: clamp(2rem, 5vw, 3.5rem) 0 0;
+    border-radius: 18px;
+    overflow: hidden;
+    background: var(--studio);
+    aspect-ratio: 21 / 9;
+  }
+  .hero-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 40%;
+  }
+  @media (max-width: 52rem) {
+    .hero-media {
+      aspect-ratio: 4 / 3;
+    }
+  }
+  @supports (animation-timeline: view()) {
+    .hero-media img {
+      animation: settle linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 100%;
+    }
+    @keyframes settle {
+      to {
+        scale: 1.12;
+        translate: 0 6%;
+      }
+    }
+  }
+  @media (max-width: 52rem) {
+    .hero-head {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* The walkaround viewer: a soft band, the captures framed like prints */
+  .hangar {
+    margin-top: clamp(4rem, 9vw, 7rem);
+    padding-block: clamp(3rem, 7vw, 5.5rem);
+    background: var(--paper-2);
+  }
+  .hangar-grid {
+    display: grid;
+    grid-template-columns: 13rem minmax(0, 1fr) 16rem;
+    grid-template-areas:
+      "head head head"
+      "roster stage readout";
+    gap: 2rem clamp(1.25rem, 2.5vw, 2.5rem);
+  }
+  .hangar-head {
+    grid-area: head;
+    display: grid;
+    grid-template-columns: 13rem minmax(0, 1fr) minmax(0, 22rem);
+    align-items: end;
+    gap: 0.5rem clamp(1.25rem, 2.5vw, 2.5rem);
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .hangar-head p {
+    color: var(--muted);
+  }
+
+  .roster {
+    grid-area: roster;
+    display: grid;
+    align-content: start;
+    gap: 1.25rem;
+  }
+  .roster-group {
+    display: grid;
+    align-content: start;
+    gap: 0.35rem;
+  }
+  .roster ul {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .roster button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.38rem 0;
+    border: 0;
+    background: none;
+    color: var(--muted);
+    font: inherit;
+    font-size: 0.9375rem;
+    font-weight: 480;
+    font-stretch: 98%;
+    text-align: left;
+    cursor: pointer;
+    transition: color 250ms, padding 450ms var(--ease);
+  }
+  .roster button:hover {
+    color: var(--ink);
+    padding-left: 0.35rem;
+  }
+  .roster button[aria-pressed="true"] {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .tick {
+    width: 1.25rem;
+    height: 2px;
+    background: var(--sun-deep);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 500ms var(--ease);
+  }
+  .roster button[aria-pressed="true"] .tick {
+    transform: scaleX(1);
+  }
+
+  .stage-wrap {
+    grid-area: stage;
+    display: grid;
+    gap: 0.9rem;
+    align-content: start;
+  }
+  .stage {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--studio);
+    box-shadow: 0 30px 60px -40px rgb(21 23 28 / 0.5);
+    touch-action: pan-y;
+    user-select: none;
+    cursor: grab;
+  }
+  .stage:active {
+    cursor: grabbing;
+  }
+  .frame {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    scale: 1.015;
+    transition:
+      opacity 420ms var(--ease),
+      scale 900ms var(--ease);
+  }
+  .frame.is-shown {
+    opacity: 1;
+    scale: 1;
+  }
+  .stage-hint {
+    position: absolute;
+    left: 1rem;
+    bottom: 0.9rem;
+    color: rgb(255 255 255 / 0.85);
+    transition: opacity 500ms;
+  }
+  .stage.was-dragged .stage-hint {
+    opacity: 0;
+  }
+  .stage-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.5rem;
+  }
+  .views {
+    display: flex;
+    padding: 0.2rem;
+    border: 1px solid var(--line-2);
+    border-radius: 999px;
+  }
+  .views button {
+    padding: 0.35rem 0.85rem;
+    border: 0;
+    border-radius: 999px;
+    background: none;
+    color: var(--muted);
+    font: inherit;
+    font-size: var(--step--1);
+    font-weight: 550;
+    cursor: pointer;
+    transition: background-color 300ms, color 300ms;
+  }
+  .views button[aria-pressed="true"] {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .views {
+    transition: opacity 400ms;
+  }
+  .hangar[data-spinning] .views {
+    opacity: 0.45;
+  }
+  .switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: var(--step--1);
+    font-weight: 550;
+    cursor: pointer;
+  }
+  .switch input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+  }
+  .switch-track {
+    position: relative;
+    width: 2.4rem;
+    height: 1.35rem;
+    border-radius: 999px;
+    border: 1px solid var(--line-2);
+    transition: background-color 300ms, border-color 300ms;
+  }
+  .switch-knob {
+    position: absolute;
+    top: 0.15rem;
+    left: 0.15rem;
+    width: 0.95rem;
+    height: 0.95rem;
+    border-radius: 50%;
+    background: var(--ink);
+    transition: transform 450ms var(--spring);
+  }
+  .switch input:checked + .switch-track {
+    background: var(--sun);
+    border-color: var(--sun);
+  }
+  .switch input:checked + .switch-track .switch-knob {
+    transform: translateX(1.05rem);
+    background: var(--ink);
+  }
+  .switch input:focus-visible + .switch-track {
+    outline: 2px solid var(--focus);
+    outline-offset: 3px;
+  }
+  .rotor svg {
+    width: 1.1rem;
+    height: 1.1rem;
+    fill: currentColor;
+  }
+  .rotor g {
+    transform-origin: 12px 12px;
+    transition: transform 1s var(--ease);
+  }
+  .switch input:checked ~ .rotor g {
+    animation: spin 0.35s linear infinite;
+  }
+  .switch:hover input:not(:checked) ~ .rotor g {
+    transform: rotate(45deg);
+  }
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .readout {
+    grid-area: readout;
+    display: grid;
+    align-content: start;
+    gap: 0.6rem;
+  }
+  .readout h3 {
+    font-size: var(--step-2);
+    font-weight: 560;
+    font-stretch: 112%;
+    letter-spacing: -0.03em;
+  }
+  .readout p {
+    color: var(--muted);
+    min-height: 4.6em;
+  }
+  .readout dl {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.9rem 0.75rem;
+    margin: 0.5rem 0 0;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--line);
+  }
+  .readout dl div {
+    display: grid;
+    gap: 0.15rem;
+  }
+  .readout .wide {
+    grid-column: 1 / -1;
+  }
+  .readout dd {
+    margin: 0;
+    font-size: var(--step-1);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+  .readout .wide dd {
+    font-size: var(--step-0);
+  }
+
+  @media (max-width: 70rem) {
+    .hangar-grid {
+      grid-template-columns: 12rem minmax(0, 1fr);
+      grid-template-areas:
+        "head head"
+        "roster stage"
+        "roster readout";
+    }
+    .hangar-head {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 46rem) {
+    .hangar-grid {
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        "head"
+        "stage"
+        "roster"
+        "readout";
+    }
+    .roster {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+    }
+    .roster button {
+      font-size: var(--step--1);
+    }
+    .tick {
+      display: none;
+    }
+  }
+
+  /* Features */
+  .features {
+    padding-top: clamp(4rem, 9vw, 7rem);
+  }
+  .feature-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+    gap: 2.25rem 2rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .feature-list li {
+    display: grid;
+    align-content: start;
+    gap: 0.55rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--ink);
+    transition: border-color 400ms;
+  }
+  .feature-list li:hover {
+    border-color: var(--sun-deep);
+  }
+  .feature-list p {
+    color: var(--ink-2);
+  }
+
+  /* Paint schemes */
+  .schemes {
+    padding-top: clamp(4rem, 9vw, 7rem);
+  }
+  .schemes-note {
+    max-width: var(--measure);
+    margin: -0.75rem 0 2rem 5.5rem;
+    color: var(--ink-2);
+  }
+  .scheme-strip {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .scheme {
+    display: grid;
+    gap: 0.7rem;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+  .scheme-media {
+    display: block;
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+    border-radius: 12px;
+    background: var(--studio);
+    transition: border-radius 600ms var(--ease);
+  }
+  .scheme img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 56%;
+    scale: 1.22;
+    filter: saturate(0.85);
+    transition:
+      scale 900ms var(--ease),
+      filter 600ms var(--ease);
+  }
+  .scheme:hover .scheme-media,
+  .scheme:focus-visible .scheme-media {
+    border-radius: 28px;
+  }
+  .scheme:hover img,
+  .scheme:focus-visible img {
+    scale: 1.34;
+    filter: saturate(1.1);
+  }
+  .scheme-cap {
+    display: grid;
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+  .scheme-cap strong {
+    color: var(--ink);
+    font-size: var(--step-0);
+    font-weight: 560;
+  }
+  @media (max-width: 52rem) {
+    .scheme-strip {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .schemes-note {
+      margin-left: 0;
+    }
+  }
+
+  /* Gallery */
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    padding-top: clamp(4rem, 9vw, 7rem);
+  }
+  .gallery figure {
+    margin: 0;
+    display: grid;
+    gap: 0.6rem;
+  }
+  .gallery .wide {
+    grid-column: 1 / -1;
+  }
+  .gallery img {
+    width: 100%;
+    height: auto;
+    border-radius: 14px;
+    background: var(--studio);
+  }
+  @media (max-width: 48rem) {
+    .gallery {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Specs */
+  .specs {
+    padding-top: clamp(4rem, 9vw, 7rem);
+  }
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+    gap: 1.5rem 2rem;
+    margin: 0 0 2.5rem;
+  }
+  .facts div {
+    display: grid;
+    gap: 0.3rem;
+  }
+  .facts dd {
+    margin: 0;
+    font-size: var(--step-1);
+    font-weight: 500;
+    letter-spacing: -0.015em;
+  }
+  .facts strong {
+    font-weight: 600;
+  }
+  .table-wrap {
+    overflow-x: auto;
+  }
+  table {
+    width: 100%;
+    min-width: 40rem;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+  }
+  th,
+  td {
+    padding: 0.75rem 0.5rem;
+    border-top: 1px solid var(--line);
+    text-align: left;
+  }
+  thead th {
+    font-size: var(--step--2);
+    font-weight: 600;
+    font-stretch: 72%;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-top: 0;
+  }
+  tbody th {
+    font-weight: 560;
+  }
+  tbody tr {
+    transition: background-color 250ms;
+  }
+  tbody tr:hover {
+    background: var(--card);
+  }
+  td {
+    color: var(--ink-2);
+  }
+  .r {
+    text-align: right;
+  }
+  .table-note {
+    margin-top: 1rem;
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+
+  /* Notes and call to action */
+  .notes {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 26rem);
+    gap: 2rem clamp(2rem, 5vw, 5rem);
+    align-items: start;
+    padding-block: clamp(4rem, 9vw, 7rem);
+  }
+  .notes-title {
+    font-size: var(--step-3);
+    margin-bottom: 1.25rem;
+  }
+  .notes ul {
+    display: grid;
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .notes li {
+    position: relative;
+    padding-left: 1.4rem;
+    color: var(--ink-2);
+  }
+  .notes li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.72em;
+    width: 0.6rem;
+    height: 1px;
+    background: var(--ink);
+  }
+  .notes-cta {
+    display: grid;
+    justify-items: start;
+    gap: 1rem;
+    padding: 1.75rem;
+    border-radius: 20px;
+    background: var(--ink);
+    color: var(--paper);
+    --focus: var(--sun);
+  }
+  .notes-cta p {
+    color: rgb(243 242 238 / 0.72);
+  }
+  .notes-cta .pill {
+    background: transparent;
+    color: var(--paper);
+    border-color: rgb(243 242 238 / 0.25);
+  }
+  @media (max-width: 52rem) {
+    .notes {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

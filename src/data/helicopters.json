@@ -1,0 +1,182 @@
+[
+ {
+  "id": "RescueTwin",
+  "title": "Rescue Twin",
+  "cls": "Civil",
+  "line": "A light twin in rescue red under white, with a hoist and a five-blade rotor.",
+  "tris": [
+   92118,
+   41438,
+   16558
+  ],
+  "length": 11.63,
+  "width": 2.69,
+  "height": 4.0,
+  "materials": 40
+ },
+ {
+  "id": "LightUtility",
+  "title": "Light Utility",
+  "cls": "Civil",
+  "line": "A compact five-blade utility helicopter in white with a teal belly band.",
+  "tris": [
+   62418,
+   28074,
+   11225
+  ],
+  "length": 7.31,
+  "width": 1.98,
+  "height": 2.82,
+  "materials": 37
+ },
+ {
+  "id": "Firefighter",
+  "title": "Firefighter",
+  "cls": "Civil",
+  "line": "The utility airframe in gloss fire red over white, with a belly water tank.",
+  "tris": [
+   76720,
+   34508,
+   13794
+  ],
+  "length": 15.25,
+  "width": 4.37,
+  "height": 3.71,
+  "materials": 42
+ },
+ {
+  "id": "UtilityTransport",
+  "title": "Utility Transport",
+  "cls": "Utility",
+  "line": "A medium utility helicopter in flat dark green, with door guns.",
+  "tris": [
+   70138,
+   31543,
+   12611
+  ],
+  "length": 15.13,
+  "width": 4.37,
+  "height": 3.83,
+  "materials": 40
+ },
+ {
+  "id": "MaritimePatrol",
+  "title": "Maritime Patrol",
+  "cls": "Utility",
+  "line": "The naval variant in light ghost grey, with a radome and a torpedo.",
+  "tris": [
+   71523,
+   32163,
+   12859
+  ],
+  "length": 15.68,
+  "width": 4.5,
+  "height": 3.83,
+  "materials": 46
+ },
+ {
+  "id": "HeavyLift",
+  "title": "Heavy Lift",
+  "cls": "Utility",
+  "line": "A tandem-rotor heavy lifter in olive drab, its rotors turning in opposite directions.",
+  "tris": [
+   93608,
+   42103,
+   16832
+  ],
+  "length": 15.73,
+  "width": 3.78,
+  "height": 5.28,
+  "materials": 40
+ },
+ {
+  "id": "LightScout",
+  "title": "Light Scout",
+  "cls": "Attack",
+  "line": "The light observation airframe in matte black, armed with rocket pods and miniguns.",
+  "tris": [
+   64684,
+   29089,
+   11627
+  ],
+  "length": 7.51,
+  "width": 3.32,
+  "height": 3.08,
+  "materials": 43
+ },
+ {
+  "id": "TandemGunship",
+  "title": "Tandem Gunship",
+  "cls": "Attack",
+  "line": "A tandem-seat attack helicopter with a chin gun, sensor turret and stub wings.",
+  "tris": [
+   60898,
+   27201,
+   10673
+  ],
+  "length": 15.53,
+  "width": 5.29,
+  "height": 4.43,
+  "materials": 47
+ },
+ {
+  "id": "TandemGunshipII",
+  "title": "Tandem Gunship II",
+  "cls": "Attack",
+  "line": "The newer, darker gunship with a mast-mounted radome above the rotor.",
+  "tris": [
+   61218,
+   27349,
+   10733
+  ],
+  "length": 15.53,
+  "width": 5.29,
+  "height": 4.43,
+  "materials": 47
+ },
+ {
+  "id": "TwinAttack",
+  "title": "Twin Attack",
+  "cls": "Attack",
+  "line": "A narrow twin-engine attack helicopter in gunship grey with a four-blade rotor.",
+  "tris": [
+   60096,
+   27027,
+   10803
+  ],
+  "length": 13.99,
+  "width": 4.06,
+  "height": 3.78,
+  "materials": 44
+ },
+ {
+  "id": "EscortAttack",
+  "title": "Escort Attack",
+  "cls": "Attack",
+  "line": "A compact escort helicopter in two-tone green-grey camouflage with a roof sight.",
+  "tris": [
+   62440,
+   28082,
+   11222
+  ],
+  "length": 13.01,
+  "width": 4.39,
+  "height": 3.48,
+  "materials": 45
+ },
+ {
+  "id": "AssaultGunship",
+  "title": "Assault Gunship",
+  "cls": "Attack",
+  "line": "A heavy assault gunship in desert camouflage over a pale belly, with a chin gun.",
+  "tris": [
+   85874,
+   38618,
+   15436
+  ],
+  "length": 18.87,
+  "width": 7.18,
+  "height": 4.0,
+  "materials": 46
+ }
+]

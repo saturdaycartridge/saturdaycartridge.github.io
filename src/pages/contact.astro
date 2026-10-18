@@ -9,7 +9,7 @@ const faq = [
   },
   {
     q: "Which Unity versions are supported?",
-    a: "Each pack's store page lists the versions it supports. Everyday Cars works with Unity 2022.3 or newer, including Unity 6.",
+    a: "Each pack's store page lists the versions it supports. Everyday Cars works with Unity 2022.3 or newer, including Unity 6. The RotorTrail Helicopter Pack needs Unity 6000.6 or newer with URP 17.6 or newer.",
   },
   {
     q: "Can I edit the models?",
@@ -18,6 +18,10 @@ const faq = [
   {
     q: "Do the Everyday Cars vehicles drive?",
     a: "No, the pack is art only, with no driving physics or controller. Wheels and the steering wheel are separate objects with correct pivots, and a small component spins and steers them, so you can connect your own controller.",
+  },
+  {
+    q: "Does the Helicopter Pack work in the Built-in render pipeline or HDRP?",
+    a: "No. Its paint, glass and rotor blur are drawn by small URP shaders included in the pack, so it needs the Universal Render Pipeline. The documentation explains each shader and how to make new paint schemes.",
   },
   {
     q: "Will there be packs for Unreal Engine?",
@@ -38,9 +42,10 @@ const faq = [
 
     <div class="wrap grid">
       <div class="stack">
-        <section class="card mail" aria-labelledby="email-title">
+        <section class="card mail" aria-labelledby="email-title" data-cursor-dark>
           <h2 id="email-title">Email</h2>
-          <a class="mail-link" href={`mailto:${email}`}>{email}</a>
+          <a class="mail-link" href={`mailto:${email}`} data-copy={email} data-cursor="Copy">{email}</a>
+          <p class="label copy-hint">Click to copy the address</p>
           <p>Replies within two business days, Monday to Friday.</p>
         </section>
 
@@ -88,11 +93,11 @@ const faq = [
     margin-bottom: clamp(2rem, 5vw, 3.5rem);
   }
   h1 {
-    font-size: var(--step-4);
-    font-weight: 820;
-    font-stretch: 120%;
-    letter-spacing: -0.03em;
-    line-height: 0.95;
+    font-size: clamp(2.75rem, 1rem + 6vw, 6.5rem);
+    font-weight: 560;
+    font-stretch: 118%;
+    letter-spacing: -0.05em;
+    line-height: 0.88;
   }
   .head p {
     max-width: 34rem;
@@ -118,19 +123,36 @@ const faq = [
   }
   .card {
     padding: 1.4rem 1.5rem 1.5rem;
-    background: var(--paper);
-    border: 2px solid var(--ink);
-    border-radius: 14px;
-    box-shadow: 0 6px 0 var(--ink);
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 20px;
+    --focus: var(--sun);
+  }
+  .card p {
+    color: rgb(243 242 238 / 0.72);
+  }
+  .copy-hint {
+    margin-bottom: 0.4rem;
+    color: rgb(243 242 238 / 0.5);
   }
   .mail-link {
     display: inline-block;
     margin-bottom: 0.6rem;
     font-size: clamp(1.25rem, 0.9rem + 1.6vw, 1.875rem);
-    font-weight: 720;
-    font-stretch: 105%;
-    letter-spacing: -0.01em;
+    font-weight: 560;
+    font-stretch: 110%;
+    letter-spacing: -0.03em;
     word-break: break-word;
+    text-decoration: none;
+    background-image: linear-gradient(var(--sun), var(--sun));
+    background-size: 0% 0.3em;
+    background-position: 0 90%;
+    background-repeat: no-repeat;
+    transition: background-size 600ms var(--ease), color 300ms;
+  }
+  .mail-link:hover,
+  .mail-link:global(.is-copied) {
+    background-size: 100% 0.3em;
   }
   .checklist {
     display: grid;
@@ -151,30 +173,35 @@ const faq = [
     top: 0.2rem;
     width: 1.05rem;
     height: 1.05rem;
-    border: 2px solid var(--ink);
-    border-radius: 4px;
+    border: 1px solid var(--ink);
+    border-radius: 50%;
+    background: transparent;
+    transition: background-color 300ms;
+  }
+  .checklist li:hover::before {
     background: var(--sun);
   }
   .faq {
-    padding: 1.6rem 1.6rem 1.4rem;
-    background: var(--paper);
-    border: 2px solid var(--ink);
-    border-radius: 14px;
+    padding: 0;
   }
   details {
-    border-top: 1px solid var(--mist);
+    border-top: 1px solid var(--line);
   }
   details:first-of-type {
-    border-top: 2px solid var(--ink);
+    border-top: 1px solid var(--ink);
   }
   summary {
     display: flex;
     justify-content: space-between;
     gap: 1rem;
     padding: 0.95rem 0;
-    font-weight: 660;
+    font-weight: 540;
     cursor: pointer;
     list-style: none;
+    transition: padding 450ms var(--ease);
+  }
+  summary:hover {
+    padding-left: 0.4rem;
   }
   summary::-webkit-details-marker {
     display: none;
@@ -185,10 +212,10 @@ const faq = [
     width: 0.65rem;
     height: 0.65rem;
     margin-top: 0.4rem;
-    border-right: 2px solid currentColor;
-    border-bottom: 2px solid currentColor;
+    border-right: 1px solid currentColor;
+    border-bottom: 1px solid currentColor;
     transform: rotate(45deg);
-    transition: transform 160ms;
+    transition: transform 450ms var(--spring);
   }
   details[open] summary::after {
     transform: rotate(-135deg) translate(-0.2rem, -0.2rem);
@@ -200,8 +227,9 @@ const faq = [
   .eula {
     margin-top: 1.25rem;
     padding-top: 1.1rem;
-    border-top: 2px solid var(--ink);
+    border-top: 1px solid var(--line);
     font-size: var(--step--1);
+    color: var(--muted);
   }
   @media (max-width: 52rem) {
     .grid {

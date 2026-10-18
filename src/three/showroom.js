@@ -8,8 +8,8 @@ import vehicles from "../data/everyday-cars.json";
 
 // Studio moods for the time-of-day buttons. bg doubles as fog so the floor fades into the backdrop.
 const MOODS = {
-  morning: { bg: "#b3bcd5", key: "#ffe0c0", keyI: 2.4, hemi: 1.15, env: 0.75, lamps: 0.3, dir: [-5, 3.2, 5] },
-  noon: { bg: "#8f99b6", key: "#ffffff", keyI: 2.9, hemi: 1.35, env: 1, lamps: 0.25, dir: [-2.5, 9, 3] },
+  morning: { bg: "#dcdfe5", key: "#ffe0c0", keyI: 2.4, hemi: 1.15, env: 0.75, lamps: 0.3, dir: [-5, 3.2, 5] },
+  noon: { bg: "#e4e3dd", key: "#ffffff", keyI: 2.9, hemi: 1.35, env: 1, lamps: 0.25, dir: [-2.5, 9, 3] },
   dusk: { bg: "#a98593", key: "#ff9258", keyI: 2.1, hemi: 0.75, env: 0.55, lamps: 0.75, dir: [6, 2.2, -4] },
   night: { bg: "#1b2233", key: "#9cadff", keyI: 0.45, hemi: 0.3, env: 0.14, lamps: 1, dir: [3, 7, 2] },
 };

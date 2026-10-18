@@ -8,7 +8,7 @@ const {
   description = "Saturday Cartridge makes game-ready 3D assets for Unity, with Unreal Engine packs on the way.",
   current,
   image = "/assets/og.jpg",
-  theme = "#8f99b6",
+  theme = "#f3f2ee",
   footer = true,
 } = Astro.props;
 const fullTitle = title ? `${title} | Saturday Cartridge` : "Saturday Cartridge";
@@ -31,12 +31,17 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:description" content={description} />
     <meta property="og:image" content={new URL(image, Astro.site)} />
     <meta name="twitter:card" content="summary_large_image" />
+    <script is:inline>document.documentElement.classList.add("js");</script>
     <slot name="head" />
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
+    <div class="progress" aria-hidden="true"></div>
     <Header current={current} />
     <slot />
     {footer && <Footer />}
+    <script>
+      import "../scripts/micro.js";
+    </script>
   </body>
 </html>
