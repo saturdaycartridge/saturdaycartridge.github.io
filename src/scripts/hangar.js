@@ -1,21 +1,14 @@
-// The helicopter page's hangar viewer. Starts as a flip-book of Unity captures: pick an aircraft, drag (or
-// arrow keys) to walk round it through its captured views, and spin its rotors up (the hover capture).
-// Two stacked frames crossfade so a change never flashes. Where WebGL 2 works, three.js loads as the
-// hangar comes near the screen and the real-time viewer (src/three/hangar3d.js) takes over once the first
-// aircraft is in: orbit, power, LODs, wireframe and the pilot's seat. The roster and readout serve both.
+// The helicopter page's hangar. Where WebGL 2 works it is a showroom like the Everyday Cars one: three.js
+// loads with the page, src/three/hangar3d.js takes over once the first aircraft is in, and the controls sit on
+// the canvas (aircraft, power, LOD, wireframe, views and the pilot's seat, time of day). Otherwise it is a
+// flip-book of Unity captures: pick an aircraft, drag (or arrow keys) to walk round it through its captured
+// views and spin its rotors up (the hover capture); two stacked frames crossfade so a change never flashes.
 // Works without the micro.js extras.
 import { countTo, scramble } from "./micro.js";
 import { webglAvailable } from "../three/fetch.js";
 
 const VIEWS = ["front34", "side", "rear34"];
-const VIEW_NAMES = {
-  front34: "front three-quarter view",
-  side: "side view",
-  rear34: "rear three-quarter view",
-  hover: "rotors spinning",
-  cockpit: "from the pilot's seat",
-  orbit: "3D view",
-};
+const VIEW_NAMES = { front34: "front three-quarter view", side: "side view", rear34: "rear three-quarter view", hover: "rotors spinning" };
 const STEP_PX = 70;
 
 const src = (id, view, w) => `/assets/img/helicopters/${id}-${view}-${w}.webp`;
@@ -25,20 +18,29 @@ const fmt = (n) => n.toLocaleString("en-GB");
 
 export function startHangar(root, fleet) {
   const byId = Object.fromEntries(fleet.map((h) => [h.id, h]));
+  const ids = fleet.map((h) => h.id);
+  const canvas = root.querySelector(".showroom-canvas");
   const stage = root.querySelector("[data-stage]");
   const frames = [...stage.querySelectorAll(".frame")];
   const spinBox = root.querySelector("[data-spin]");
   const picks = [...root.querySelectorAll("[data-pick]")];
   const viewButtons = [...root.querySelectorAll("[data-view]")];
   const lodButtons = [...root.querySelectorAll("[data-lod]")];
+  const moodButtons = [...root.querySelectorAll("[data-mood]")];
   const wireButton = root.querySelector("[data-wire]");
   const power = root.querySelector("[data-power]");
   const powerOut = root.querySelector("[data-power-out]");
   const statusEl = root.querySelector("[data-status]");
+  const readout = root.querySelector("[data-readout]");
   const r = (k) => root.querySelector(`[data-r="${k}"]`);
   const state = { id: root.dataset.aircraft || fleet[0].id, view: "front34", spin: false, token: 0, lod: 1, wire: false };
+  const gl = webglAvailable();
   let front = 0;
   let viewer = null;
+
+  const press = (buttons, on) => buttons.forEach((b) => b.setAttribute("aria-pressed", String(on(b))));
+
+  // --- captures (no WebGL) ---------------------------------------------------------------------------
 
   const preload = (id) => {
     if (viewer) return;
@@ -50,19 +52,8 @@ export function startHangar(root, fleet) {
     }
   };
 
-  function label() {
-    const h = byId[state.id];
-    if (viewer) {
-      const how = state.view === "cockpit" ? "Drag to look around." : "Drag or use the left and right arrow keys to turn it.";
-      stage.setAttribute("aria-label", `${h.title} in 3D, ${VIEW_NAMES[state.view]}. ${how}`);
-      return;
-    }
-    const view = state.spin ? "hover" : state.view;
-    stage.setAttribute("aria-label", `${h.title}, ${VIEW_NAMES[view]}. Drag or use the left and right arrow keys to turn it.`);
-  }
-
   async function draw() {
-    if (viewer) return label();
+    if (viewer) return;
     const view = state.spin ? "hover" : state.view;
     root.toggleAttribute("data-spinning", state.spin);
     const token = ++state.token;
@@ -78,11 +69,8 @@ export function startHangar(root, fleet) {
     back.classList.add("is-shown");
     frames[front].classList.remove("is-shown");
     front = 1 - front;
-    label();
-  }
-
-  function pressViews() {
-    viewButtons.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.view === state.view)));
+    const h = byId[state.id];
+    stage.setAttribute("aria-label", `${h.title}, ${VIEW_NAMES[view]}. Drag or use the left and right arrow keys to turn it.`);
   }
 
   function setView(name) {
@@ -91,9 +79,9 @@ export function startHangar(root, fleet) {
       state.spin = false;
       spinBox.checked = false;
     }
-    pressViews();
+    press(viewButtons, (b) => b.dataset.view === state.view);
     if (viewer) viewer.setView(name);
-    draw();
+    else draw();
   }
 
   const stepView = (dir) => {
@@ -101,18 +89,27 @@ export function startHangar(root, fleet) {
     setView(VIEWS[(i + dir + VIEWS.length) % VIEWS.length]);
   };
 
-  function showFaces() {
-    const f = byId[state.id].faces?.[state.lod];
-    const el = r("faces");
-    if (el) el.textContent = f ? `LOD${state.lod} topology: ${fmt(f[0])} quads, ${fmt(f[1])} triangles` : "";
-    root.querySelectorAll("[data-lod-row]").forEach((row) => row.classList.toggle("is-on", !!viewer && +row.dataset.lodRow === state.lod));
+  // --- shared ----------------------------------------------------------------------------------------
+
+  function sync() {
+    const h = byId[state.id];
+    for (const b of lodButtons) {
+      const t = b.querySelector(".tris");
+      if (t) t.textContent = fmt(h.tris[+b.dataset.lod]);
+    }
+    if (readout) {
+      const f = h.faces?.[state.lod];
+      readout.innerHTML =
+        `<strong>${h.title}</strong> <span>${sizeText(h)}</span><span>LOD${state.lod}: ${fmt(h.tris[state.lod])} triangles</span>` +
+        (f ? `<span>${fmt(f[0])} quads, ${fmt(f[1])} triangle faces</span>` : "");
+    }
   }
 
   function pick(id) {
     if (!byId[id] || id === state.id) return;
     state.id = id;
     root.dataset.aircraft = id;
-    picks.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.pick === id)));
+    press(picks, (b) => b.dataset.pick === id);
     const h = byId[id];
     r("cls").textContent = h.cls;
     scramble(r("title"), h.title, 420);
@@ -121,8 +118,8 @@ export function startHangar(root, fleet) {
     countTo(r("t0"), h.tris[0], 700);
     countTo(r("t1"), h.tris[1], 700);
     countTo(r("t2"), h.tris[2], 700);
-    showFaces();
-    if (viewer) viewer.select(id).then(label);
+    sync();
+    if (viewer) viewer.select(id);
     else draw();
   }
 
@@ -133,21 +130,23 @@ export function startHangar(root, fleet) {
     b.addEventListener("click", () => pick(b.dataset.pick));
     b.addEventListener("pointerenter", () => preload(b.dataset.pick), { once: true });
   });
-  viewButtons.forEach((b) => b.addEventListener("click", () => setView(b.dataset.view)));
+  // the pilot's seat button toggles back out to the front view
+  viewButtons.forEach((b) =>
+    b.addEventListener("click", () => setView(b.dataset.view === "cockpit" && state.view === "cockpit" ? "front34" : b.dataset.view)),
+  );
   spinBox.addEventListener("change", () => {
     state.spin = spinBox.checked;
     draw();
   });
 
-  // Drag to turn: every STEP_PX of travel moves one view round (the 3D view has its own orbit controls)
+  // Drag to turn: every STEP_PX of travel moves one view round
   let dragX = null;
   stage.addEventListener("pointerdown", (e) => {
-    if (viewer) return;
     dragX = e.clientX;
     stage.setPointerCapture(e.pointerId);
   });
   stage.addEventListener("pointermove", (e) => {
-    if (dragX === null || viewer) return;
+    if (dragX === null) return;
     const dx = e.clientX - dragX;
     if (Math.abs(dx) < STEP_PX) return;
     dragX = e.clientX;
@@ -158,23 +157,6 @@ export function startHangar(root, fleet) {
   stage.addEventListener("pointerup", end);
   stage.addEventListener("pointercancel", end);
   stage.addEventListener("keydown", (e) => {
-    if (viewer) {
-      const keys = {
-        ArrowLeft: () => viewer.nudge(-15),
-        ArrowRight: () => viewer.nudge(15),
-        1: () => setLOD(0),
-        2: () => setLOD(1),
-        3: () => setLOD(2),
-        w: () => setWire(!state.wire),
-        c: () => setView(state.view === "cockpit" ? "front34" : "cockpit"),
-      };
-      const fn = keys[e.key];
-      if (!fn || e.metaKey || e.ctrlKey || e.altKey) return;
-      e.preventDefault();
-      stage.classList.add("was-dragged");
-      fn();
-      return;
-    }
     if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
     e.preventDefault();
     stage.classList.add("was-dragged");
@@ -187,18 +169,21 @@ export function startHangar(root, fleet) {
       e.preventDefault();
       pick(el.dataset.jump);
       root.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
-      stage.focus({ preventScroll: true });
+      (viewer ? canvas : stage).focus({ preventScroll: true });
     }),
   );
 
-  preload(state.id);
+  if (!gl) {
+    preload(state.id);
+    return;
+  }
 
-  // --- real-time viewer ------------------------------------------------------------------------------
+  // --- showroom (WebGL 2) ----------------------------------------------------------------------------
 
   function setLOD(n) {
     state.lod = n;
-    lodButtons.forEach((b) => b.setAttribute("aria-pressed", String(+b.dataset.lod === n)));
-    showFaces();
+    press(lodButtons, (b) => +b.dataset.lod === n);
+    sync();
     viewer?.setLOD(n);
   }
 
@@ -208,12 +193,16 @@ export function startHangar(root, fleet) {
     viewer?.setWire(on);
   }
 
+  function setMood(name) {
+    press(moodButtons, (b) => b.dataset.mood === name);
+    viewer?.applyMood(name);
+  }
+
   function setPower(v) {
     power.value = String(v);
     powerOut.textContent = `${v}%`;
     power.setAttribute("aria-valuetext", v ? `${v} percent power` : "Rotors stopped");
     power.style.setProperty("--p", `${v}%`);
-    root.toggleAttribute("data-spinning", v > 0);
     viewer?.setPower(v / 100);
   }
 
@@ -224,13 +213,35 @@ export function startHangar(root, fleet) {
       // only say so when it takes a moment
       statusTimer = setTimeout(() => {
         statusEl.textContent = `Loading ${s.what}…`;
-        stage.classList.add("is-loading");
+        root.classList.add("is-loading");
       }, 180);
     } else {
       statusEl.textContent = s.error ? "Could not load this one. Try again in a moment." : "";
-      stage.classList.remove("is-loading");
+      root.classList.remove("is-loading");
     }
   }
+
+  lodButtons.forEach((b) => b.addEventListener("click", () => setLOD(+b.dataset.lod)));
+  moodButtons.forEach((b) => b.addEventListener("click", () => setMood(b.dataset.mood)));
+  wireButton.addEventListener("click", () => setWire(!state.wire));
+  power.addEventListener("input", () => setPower(+power.value));
+  canvas.addEventListener("keydown", (e) => {
+    if (!viewer || e.metaKey || e.ctrlKey || e.altKey) return;
+    const i = ids.indexOf(state.id);
+    const keys = {
+      ArrowRight: () => pick(ids[(i + 1) % ids.length]),
+      ArrowLeft: () => pick(ids[(i + ids.length - 1) % ids.length]),
+      1: () => setLOD(0),
+      2: () => setLOD(1),
+      3: () => setLOD(2),
+      w: () => setWire(!state.wire),
+      c: () => setView(state.view === "cockpit" ? "front34" : "cockpit"),
+    };
+    const fn = keys[e.key];
+    if (!fn) return;
+    e.preventDefault();
+    fn();
+  });
 
   async function goLive() {
     let mod;
@@ -244,18 +255,15 @@ export function startHangar(root, fleet) {
     const v = mod.startHangar3D(root, fleet, {
       onStatus: (s) => live && status(s),
       onUserTurn() {
-        stage.classList.add("was-dragged");
         if (state.view === "cockpit") return;
         state.view = "orbit";
-        pressViews();
+        press(viewButtons, () => false);
       },
-      onLOD: showFaces,
     });
     if (!v) return;
     if (import.meta.env.DEV) window.__hangar3d = v;
     v.setView(state.view === "orbit" ? "front34" : state.view);
     v.setLOD(state.lod);
-    if (state.spin) setPower(100);
     v.setPower(+power.value / 100);
     // keep the captures up until the aircraft on show is in (the roster may change meanwhile)
     while (v.heli?.spec.id !== state.id) {
@@ -264,31 +272,26 @@ export function startHangar(root, fleet) {
     live = true;
     viewer = v;
     root.classList.add("hangar-live");
+    root.toggleAttribute("data-spinning", false);
     root.querySelectorAll("[data-live]").forEach((el) => (el.hidden = false));
     root.querySelectorAll("[data-fallback]").forEach((el) => (el.hidden = true));
-    root.toggleAttribute("data-spinning", +power.value > 0);
-    stage.setAttribute("role", "group");
-    stage.setAttribute("aria-roledescription", "3D viewer");
-    pressViews();
-    showFaces();
-    label();
+    if (state.spin) setPower(100);
+    press(viewButtons, (b) => b.dataset.view === state.view);
+    sync();
   }
 
-  if (webglAvailable()) {
-    lodButtons.forEach((b) => b.addEventListener("click", () => setLOD(+b.dataset.lod)));
-    wireButton.addEventListener("click", () => setWire(!state.wire));
-    power.addEventListener("input", () => setPower(+power.value));
-    let started = false;
-    const start = () => {
-      if (started) return;
-      started = true;
-      io.disconnect();
-      goLive();
-    };
-    const io = new IntersectionObserver(([e]) => e.isIntersecting && start(), { rootMargin: "600px 0px" });
-    io.observe(root);
-    // pointing at or tabbing into the hangar starts it too
-    root.addEventListener("pointerenter", start, { once: true });
-    root.addEventListener("focusin", start, { once: true });
-  }
+  // The hangar opens the page, so this normally starts at once; pointing at it or tabbing in starts it too
+  // (some embedded browsers never report intersections).
+  let started = false;
+  const start = () => {
+    if (started) return;
+    started = true;
+    io.disconnect();
+    goLive();
+  };
+  const io = new IntersectionObserver(([e]) => e.isIntersecting && start(), { rootMargin: "600px 0px" });
+  io.observe(root);
+  root.addEventListener("pointerenter", start, { once: true });
+  root.addEventListener("focusin", start, { once: true });
+  sync();
 }

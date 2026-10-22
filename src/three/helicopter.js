@@ -3,6 +3,7 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
 import { fetchBuffer } from "./fetch.js";
 import { RotorTrailMaterials, rotorDisc } from "./rotortrail.js";
+import { glowTexture } from "./glow.js";
 
 const BASE = "/models/helicopters/";
 const loader = new GLTFLoader();
@@ -62,6 +63,8 @@ export class Helicopter {
     this.mainRate = 300 * 6 * DEG * (spec.clockwise ? -1 : 1);
     this.tailRate = (this.tandem ? -300 : 1200) * 6 * DEG;
     this.buildDiscs();
+    this.glowGain = 0;
+    this.buildGlows();
     this.setLOD(1);
   }
 
@@ -192,6 +195,44 @@ export class Helicopter {
     }
   }
 
+  /**
+   * Soft halos on the navigation lights (emissive parts bright enough to light up), shown by mood. One light
+   * mesh can hold several lamps (both wingtips, say), so its vertices are grouped into lamps first.
+   */
+  buildGlows() {
+    this.glows = [];
+    const v = new THREE.Vector3();
+    const size = new THREE.Vector3();
+    for (const mesh of this.meshes) {
+      const rt = mesh.material.userData.rt;
+      if (mesh.userData.lod !== 1 || rt?.kind !== "Emissive" || (rt.Intensity ?? 0) < 1) continue;
+      // hang the halos on the part, not the LOD mesh, so they stay whichever LOD is showing
+      let anchor = mesh.parent;
+      while (anchor.parent && /_LOD\d$/.test(anchor.name)) anchor = anchor.parent;
+      const lamps = [];
+      const pos = mesh.geometry.attributes.position;
+      for (let i = 0; i < pos.count; i++) {
+        v.fromBufferAttribute(pos, i).applyMatrix4(mesh.matrixWorld);
+        let lamp = lamps.find((l) => l.seed.distanceTo(v) < 0.35);
+        if (!lamp) lamps.push((lamp = { seed: v.clone(), box: new THREE.Box3() }));
+        lamp.box.expandByPoint(v);
+      }
+      const color = new THREE.Color().setRGB(...rt.Color, THREE.LinearSRGBColorSpace);
+      for (const lamp of lamps) {
+        const sprite = new THREE.Sprite(
+          new THREE.SpriteMaterial({ map: glowTexture(), color, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0 }),
+        );
+        const r = THREE.MathUtils.clamp(lamp.box.getSize(size).length() * 3, 0.4, 0.9);
+        sprite.scale.set(r, r, 1);
+        sprite.position.copy(anchor.worldToLocal(lamp.box.getCenter(new THREE.Vector3())));
+        sprite.renderOrder = 6;
+        sprite.visible = false;
+        anchor.add(sprite);
+        this.glows.push(sprite);
+      }
+    }
+  }
+
   update(dt) {
     const step = dt * this.power;
     this.mainRotor?.rotateOnAxis(this.mainAxis, this.mainRate * step);
@@ -201,6 +242,10 @@ export class Helicopter {
     for (const d of this.discs) {
       d.material.uniforms.uSpin.value = spin;
       d.visible = spin > 0.001;
+    }
+    for (const g of this.glows) {
+      g.material.opacity = this.glowGain;
+      g.visible = this.glowGain > 0.01;
     }
   }
 

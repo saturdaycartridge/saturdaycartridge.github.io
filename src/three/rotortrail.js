@@ -348,6 +348,7 @@ export class RotorTrailMaterials {
       });
     } else m = surfaceMaterial(src.name, rt);
     m.userData.kind = rt?.kind ?? "Surface";
+    m.userData.rt = rt;
     m.polygonOffset = m.userData.kind !== "Glass";
     m.polygonOffsetFactor = 1;
     m.polygonOffsetUnits = 1;

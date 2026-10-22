@@ -14,7 +14,7 @@ npm run build      # static site in dist/
 
 - `src/pages/index.astro` - home: the wordmark, the pack index and pack cards
 - `src/pages/packs/everyday-cars/` - the Everyday Cars showroom (three.js) and pack details
-- `src/pages/packs/helicopters/` - the RotorTrail Helicopter Pack: hangar viewer, paint schemes, specs (coming soon)
+- `src/pages/packs/helicopters/` - the RotorTrail Helicopter Pack: a hangar showroom like the cars' one, paint schemes, specs (coming soon)
 - `src/pages/contact.astro` - support, served at `/contact.html` (the address the Asset Store profile links to)
 - `src/pages/404.astro`
 
@@ -51,8 +51,8 @@ are in `tools/helicopter_data.py`.
 - `src/three/showroom.js` - the Everyday Cars viewer
 - `src/three/vehicle.js`, `materials.js` - load the vehicles and dress them in the pack's own materials
   (colours mirror `Assets/_PackTools/Editor/PackMaterials.cs` and `PackConfig.cs` in the pack project)
-- `src/three/hangar3d.js` - the Helicopter Pack viewer, started by `src/scripts/hangar.js` when the hangar
-  nears the screen; its studio matches the pack's captures (`HelicopterPackScenes.cs`)
+- `src/three/hangar3d.js` - the Helicopter Pack showroom (turntable, time of day, views, pilot's seat), started
+  by `src/scripts/hangar.js`; noon is the studio of the pack's captures (`HelicopterPackScenes.cs`)
 - `src/three/helicopter.js` - one aircraft: lite file first, LOD0 grafted in on request, rotors and blur discs
   as in `HelicopterRotors.cs`, quad wireframe
 - `src/three/rotortrail.js` - three.js ports of the pack's URP shaders (paint, surface, glass, emissive,
