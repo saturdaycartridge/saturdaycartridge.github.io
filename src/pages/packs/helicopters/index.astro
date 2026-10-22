@@ -608,24 +608,22 @@ const notify = "mailto:ifeonu95@gmail.com?subject=" + encodeURIComponent("Helico
     min-height: 40rem;
     padding: 0;
     overflow: hidden;
-    background: #516488;
-    color: var(--paper);
-    --focus: var(--sun);
+    background: #e4e3dd;
     transition: background-color 600ms, color 600ms;
   }
   /* the section matches the studio backdrop, which shows around the canvas on small screens */
   .hangar-live[data-mood="morning"] {
-    background: #8d9bbb;
-    color: var(--ink);
-    --focus: var(--ink);
+    background: #dcdfe5;
   }
   .hangar-live[data-mood="dusk"] {
-    background: #6f5a74;
+    background: #a98593;
   }
   .hangar-live[data-mood="night"] {
-    background: #111726;
+    background: var(--ink);
+    color: var(--paper);
+    --focus: var(--sun);
   }
-  :global(body:has(.hangar-live:not([data-mood="morning"])) .site-header) {
+  :global(body:has(.hangar-live[data-mood="night"]) .site-header) {
     color: var(--paper);
     --focus: var(--sun);
   }
@@ -664,8 +662,6 @@ const notify = "mailto:ifeonu95@gmail.com?subject=" + encodeURIComponent("Helico
   }
   .hangar-live .roster .label {
     padding-left: 0.7rem;
-    font-weight: 700;
-    text-shadow: 0 1px 6px rgb(21 23 28 / 0.35);
   }
   .hangar-live .roster ul {
     gap: 0.25rem;

@@ -51,8 +51,8 @@ are in `tools/helicopter_data.py`.
 - `src/three/showroom.js` - the Everyday Cars viewer
 - `src/three/vehicle.js`, `materials.js` - load the vehicles and dress them in the pack's own materials
   (colours mirror `Assets/_PackTools/Editor/PackMaterials.cs` and `PackConfig.cs` in the pack project)
-- `src/three/hangar3d.js` - the Helicopter Pack showroom (turntable, time of day, views, pilot's seat), started
-  by `src/scripts/hangar.js`; noon is the studio of the pack's captures (`HelicopterPackScenes.cs`)
+- `src/three/hangar3d.js` - the Helicopter Pack showroom (turntable, time of day, views, pilot's seat), lit like
+  the cars' one and started by `src/scripts/hangar.js`; only the still captures keep the pack's slate studio
 - `src/three/helicopter.js` - one aircraft: lite file first, LOD0 grafted in on request, rotors and blur discs
   as in `HelicopterRotors.cs`, quad wireframe
 - `src/three/rotortrail.js` - three.js ports of the pack's URP shaders (paint, surface, glass, emissive,

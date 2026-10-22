@@ -1,23 +1,21 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { Helicopter } from "./helicopter.js";
 import { blinkClock } from "./rotortrail.js";
 import { webglAvailable } from "./fetch.js";
 
-// The helicopter showroom, built like the Everyday Cars one (showroom.js): the aircraft on a slowly turning
-// disc, time-of-day moods, LOD and wireframe. Noon is the studio of the pack's captures
-// (Assets/_HelicopterTools/Editor/HelicopterPackScenes.cs): a slate floor against a backdrop of the same
-// slate, a warm sun with soft shadows, a procedural sky for ambient light and softboxes seen only in
-// reflections. Its floor, backdrop and shadow tones were matched to the captures' pixels.
+// The helicopter showroom, built like the Everyday Cars one (showroom.js) and lit the same way: the aircraft
+// on a slowly turning pale disc in a plain studio whose backdrop doubles as fog, time-of-day moods, LOD and
+// wireframe. The paint comes from the pack's own shaders (rotortrail.js).
 const DEG = Math.PI / 180;
 
-// bg: backdrop, floor: floor albedo, sun: colour, sunI: intensity (Unity's 2.1 x pi at noon: three.js lights
-// are physical), dir: towards the sun, env: sky and softbox light, glow: how much the lights' halos show
+// showroom.js MOODS. bg doubles as fog so the floor fades into the backdrop; lamps sets the light halos.
 const MOODS = {
-  morning: { bg: "#8d9bbb", floor: "#7180a2", sun: "#ffd9b8", sunI: 4.6, env: 0.32, glow: 0.25, dir: [5, 3.2, 5] },
-  noon: { bg: "#516488", floor: "#4d5e80", sun: "#fff1df", sunI: 2.1 * Math.PI, env: 0.34, glow: 0.12, dir: [-0.427, 0.719, -0.547] },
-  dusk: { bg: "#6f5a74", floor: "#5a4a63", sun: "#ff9a5c", sunI: 3.4, env: 0.16, glow: 0.7, dir: [-6, 1.6, 3] },
-  night: { bg: "#111726", floor: "#1d2436", sun: "#9cadff", sunI: 0.9, env: 0.045, glow: 1, dir: [3, 7, 2] },
+  morning: { bg: "#dcdfe5", key: "#ffe0c0", keyI: 2.4, hemi: 1.15, env: 0.75, lamps: 0.3, dir: [-5, 3.2, 5] },
+  noon: { bg: "#e4e3dd", key: "#ffffff", keyI: 2.9, hemi: 1.35, env: 1, lamps: 0.25, dir: [-2.5, 9, 3] },
+  dusk: { bg: "#a98593", key: "#ff9258", keyI: 2.1, hemi: 0.75, env: 0.55, lamps: 0.75, dir: [6, 2.2, -4] },
+  night: { bg: "#1b2233", key: "#9cadff", keyI: 0.45, hemi: 0.3, env: 0.14, lamps: 1, dir: [3, 7, 2] },
 };
 
 // Builder.Capture views: azimuth (0 = nose on, 90 = left side) and elevation, with the same 32° lens,
@@ -38,57 +36,10 @@ export function startHangar3D(root, fleet, hooks = {}) {
   }
 }
 
-/** Sky gradient plus softboxes, rendered once into a PMREM environment map. */
-function studioEnvironment(renderer) {
-  const env = new THREE.Scene();
-  const sky = new THREE.Mesh(
-    new THREE.SphereGeometry(60, 48, 24),
-    new THREE.ShaderMaterial({
-      side: THREE.BackSide,
-      depthWrite: false,
-      uniforms: {
-        uTop: { value: new THREE.Color("#3f6bcc") },
-        uHorizon: { value: new THREE.Color("#7393d6") },
-        uGround: { value: new THREE.Color("#2c3858") },
-      },
-      vertexShader: "varying vec3 vDir; void main() { vDir = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }",
-      fragmentShader: `
-        uniform vec3 uTop; uniform vec3 uHorizon; uniform vec3 uGround; varying vec3 vDir;
-        void main() {
-          float y = normalize(vDir).y;
-          vec3 c = y > 0.0 ? mix(uHorizon, uTop, pow(y, 0.45)) : mix(uHorizon, uGround, pow(-y, 0.25));
-          gl_FragColor = vec4(c * 1.3, 1.0);
-        }`,
-    }),
-  );
-  env.add(sky);
-  // Stage(): softboxes for a single aircraft, s = 2.5, around a probe 3 m up (the cube camera sits at 0)
-  const s = 2.5;
-  const box = new THREE.MeshBasicMaterial({ color: new THREE.Color(5.5, 5.5, 5.5), side: THREE.DoubleSide });
-  const boxes = [
-    [[0, 9, 0], [90, 0], [34, 2.6]],
-    [[0, 8.5, 7], [60, 0], [34, 2]],
-    [[0, 8.5, -7], [120, 0], [34, 2]],
-    [[-17, 4.5, 0], [0, -90], [18, 3]],
-    [[17, 4.5, 0], [0, 90], [18, 3]],
-  ];
-  for (const [p, r, size] of boxes) {
-    const q = new THREE.Mesh(new THREE.PlaneGeometry(size[0] * s, size[1] * s), box);
-    q.position.set(p[0] * s, p[1] * s - 3, p[2] * s);
-    q.rotation.set(r[0] * DEG, r[1] * DEG, 0, "YXZ");
-    env.add(q);
-  }
-  const pmrem = new THREE.PMREMGenerator(renderer);
-  const tex = pmrem.fromScene(env, 0.02, 0.1, 200).texture;
-  pmrem.dispose();
-  return tex;
-}
-
 const moodValues = (m) => ({
   ...m,
   bg: new THREE.Color(m.bg),
-  floor: new THREE.Color(m.floor),
-  sun: new THREE.Color(m.sun),
+  key: new THREE.Color(m.key),
   dir: new THREE.Vector3(...m.dir).normalize(),
 });
 
@@ -105,36 +56,38 @@ class Hangar3D {
     r.shadowMap.enabled = true;
     r.shadowMap.type = THREE.PCFShadowMap;
     r.toneMapping = THREE.NeutralToneMapping;
-    r.toneMappingExposure = 1.15; // the captures' post exposure (+0.2 EV)
     this.renderer = r;
 
     const scene = new THREE.Scene();
-    scene.environment = studioEnvironment(r);
+    const pmrem = new THREE.PMREMGenerator(r);
+    scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+    pmrem.dispose();
+    scene.fog = new THREE.Fog("#e4e3dd", 40, 120);
     this.scene = scene;
 
-    const sun = new THREE.DirectionalLight("#ffffff", 1);
+    this.hemi = new THREE.HemisphereLight("#ffffff", "#5c6380", 1.2);
+    scene.add(this.hemi);
+    const sun = new THREE.DirectionalLight("#ffffff", 2.5);
     sun.castShadow = true;
     sun.shadow.mapSize.set(2048, 2048);
-    sun.shadow.intensity = 0.75;
-    sun.shadow.radius = 3;
-    sun.shadow.bias = -0.0003;
+    sun.shadow.radius = 5;
+    sun.shadow.bias = -0.0004;
     sun.shadow.normalBias = 0.02;
     scene.add(sun, sun.target);
     this.sun = sun;
 
-    this.floorMat = new THREE.MeshStandardMaterial({ roughness: 1, metalness: 0, envMapIntensity: 0.9 });
-    const floor = new THREE.Mesh(new THREE.PlaneGeometry(1200, 1200), this.floorMat);
+    this.floorMat = new THREE.MeshStandardMaterial({ roughness: 1 });
+    const floor = new THREE.Mesh(new THREE.CircleGeometry(300, 64), this.floorMat);
     floor.rotation.x = -Math.PI / 2;
     floor.receiveShadow = true;
     scene.add(floor);
 
-    // the turntable: the same pale disc as the car showroom, sized to each aircraft
+    // the turntable: the car showroom's disc, sized to each aircraft
     this.turntable = new THREE.Group();
     scene.add(this.turntable);
     this.disc = new THREE.Mesh(
       new THREE.CylinderGeometry(1, 1, 0.08, 96),
-      // the cars' #edf0f6 disc, darkened for the brighter studio sun of the pack captures
-      new THREE.MeshStandardMaterial({ color: "#a4abba", roughness: 0.55 }),
+      new THREE.MeshStandardMaterial({ color: "#edf0f6", roughness: 0.55 }),
     );
     this.disc.position.y = 0.04;
     this.disc.receiveShadow = true;
@@ -267,7 +220,7 @@ class Hangar3D {
     if (!target) return;
     this.state.mood = name;
     const m = this.mood;
-    this.moodFrom = { ...m, bg: m.bg.clone(), floor: m.floor.clone(), sun: m.sun.clone(), dir: m.dir.clone() };
+    this.moodFrom = { ...m, bg: m.bg.clone(), key: m.key.clone(), dir: m.dir.clone() };
     this.moodTo = moodValues(target);
     this.moodT = instant || this.reduced ? 1 : 0;
     if (this.moodT === 1) Object.assign(this.mood, this.moodTo);
@@ -322,6 +275,9 @@ class Hangar3D {
       c.set(i & 1 ? b.max.x : b.min.x, i & 2 ? b.max.y : b.min.y, i & 4 ? b.max.z : b.min.z).applyMatrix4(rot).applyMatrix4(inv);
       d = Math.max(d, -c.z + Math.abs(c.x) / th, -c.z + Math.abs(c.y) / tv);
     }
+    // the car showroom fogs from about 1.4x to 4x its camera distance; keep the same proportions
+    this.scene.fog.near = d * 1.4;
+    this.scene.fog.far = d * 4;
     return { target, position: target.clone().addScaledVector(dir, d), fov: 32, near: 0.2 };
   }
 
@@ -404,17 +360,18 @@ class Hangar3D {
       const b = this.moodTo;
       const m = this.mood;
       m.bg.copy(a.bg).lerp(b.bg, t);
-      m.floor.copy(a.floor).lerp(b.floor, t);
-      m.sun.copy(a.sun).lerp(b.sun, t);
+      m.key.copy(a.key).lerp(b.key, t);
       m.dir.copy(a.dir).lerp(b.dir, t).normalize();
-      for (const k of ["sunI", "env", "glow"]) m[k] = THREE.MathUtils.lerp(a[k], b[k], t);
+      for (const k of ["keyI", "hemi", "env", "lamps"]) m[k] = THREE.MathUtils.lerp(a[k], b[k], t);
     }
     const m = this.mood;
     this.renderer.setClearColor(m.bg);
-    this.floorMat.color.copy(m.floor);
-    this.sun.color.copy(m.sun);
-    this.sun.intensity = m.sunI;
+    this.scene.fog.color.copy(m.bg);
+    this.floorMat.color.copy(m.bg).multiplyScalar(0.92);
+    this.sun.color.copy(m.key);
+    this.sun.intensity = m.keyI;
     this.sun.position.copy(m.dir).multiplyScalar(40);
+    this.hemi.intensity = m.hemi;
     this.scene.environmentIntensity = m.env;
 
     // spool the rotors toward the requested power
@@ -446,7 +403,7 @@ class Hangar3D {
     this.controls.update(dt);
     if (this.heli) {
       this.heli.power = this.power;
-      this.heli.glowGain = m.glow;
+      this.heli.glowGain = m.lamps;
       this.heli.update(dt, this.camera);
     }
     this.renderer.render(this.scene, this.camera);
