@@ -1,11 +1,13 @@
 """Write src/data/helicopters.json from the Helicopter Pack project.
 
-    python3 tools/helicopter_data.py            # HELI=<path> points at another pack project
+    python3 tools/helicopter_data.py [meta dir]   # HELI=<path> points at another pack project
 
-Reads Source/build/catalog.json (sizes, blade counts) and the pack's Documentation/UnityTriangleCounts.md
-(triangles as Unity imports them). The ids are the pack's prefab names, generic roles like the titles.
+Reads Source/build/catalog.json (sizes, rotor direction) and the pack's Documentation/UnityTriangleCounts.md
+(triangles as Unity imports them). With the meta dir written by tools/export_helicopters.py (run through
+tools/build-helicopters.sh) it also adds quad and other face counts per LOD and the pilot's eye point,
+which the 3D viewer uses; without it those fields are kept from the current file. The ids are the pack's prefab names, generic roles like the titles.
 """
-import json, os, re
+import json, os, re, sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -41,12 +43,24 @@ def imported_tris():
 def main():
     catalog = {a['name']: a for a in json.loads((HELI / 'Source/build/catalog.json').read_text())['aircraft']}
     tris = imported_tris()
+    meta_dir = Path(sys.argv[1]) if len(sys.argv) > 1 else None
+    current = {h['id']: h for h in json.loads(OUT.read_text())} if OUT.exists() else {}
     out = []
     for key, title, cls, line in ROSTER:
         a = catalog[key]
         length, width, height = (round(v, 2) for v in a['bodySize'])
-        out.append(dict(id=key, title=title, cls=cls, line=line, tris=tris[key], length=length, width=width, height=height,
-                        materials=len(a['materials'])))
+        h = dict(id=key, title=title, cls=cls, line=line, tris=tris[key], length=length, width=width, height=height,
+                 materials=len(a['materials']), clockwise=a['clockwise'])
+        meta_file = meta_dir / f'{key}.meta.json' if meta_dir else None
+        if meta_file and meta_file.exists():
+            meta = json.loads(meta_file.read_text())
+            h['faces'] = meta['faces']
+            sockets = meta['sockets']
+            h['eye'] = sockets.get('pilot_eye') or sockets.get('gunner_eye')
+        else:
+            for k in ('faces', 'eye'):
+                if k in current.get(key, {}): h[k] = current[key][k]
+        out.append(h)
     OUT.write_text(json.dumps(out, indent=1) + '\n')
     print(f'{len(out)} helicopters -> {OUT}')
 

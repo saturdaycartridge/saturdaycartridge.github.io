@@ -33,7 +33,8 @@ quiet row (in the workshop).
 
 ## Helicopter Pack images and data
 
-The hangar viewer shows Unity captures from the Helicopter Pack project (`Helicopter Pack` next to this pack's
+The hangar viewer is real-time 3D where WebGL 2 works (see Models below); the Unity captures are its
+fallback and the paint-scheme and gallery images. They come from the Helicopter Pack project (`Helicopter Pack` next to this pack's
 folder; `HELI=<path>` points elsewhere). After re-capturing there (`Source/unity.sh HelicopterPackTools.Builder.Capture`
 and `CaptureStore`):
 
@@ -50,6 +51,12 @@ are in `tools/helicopter_data.py`.
 - `src/three/showroom.js` - the Everyday Cars viewer
 - `src/three/vehicle.js`, `materials.js` - load the vehicles and dress them in the pack's own materials
   (colours mirror `Assets/_PackTools/Editor/PackMaterials.cs` and `PackConfig.cs` in the pack project)
+- `src/three/hangar3d.js` - the Helicopter Pack viewer, started by `src/scripts/hangar.js` when the hangar
+  nears the screen; its studio matches the pack's captures (`HelicopterPackScenes.cs`)
+- `src/three/helicopter.js` - one aircraft: lite file first, LOD0 grafted in on request, rotors and blur discs
+  as in `HelicopterRotors.cs`, quad wireframe
+- `src/three/rotortrail.js` - three.js ports of the pack's URP shaders (paint, surface, glass, emissive,
+  rotor disc), fed by the material values the packer stores in each GLB
 
 ## Models
 
@@ -65,3 +72,14 @@ npm run models -- Sedan Van     # some of them
 `MODELS=<path>` points at a different Models folder; the default is the pack project this folder sits in.
 `src/data/everyday-cars.json` (titles, triangle and quad counts, sizes) comes from the pack's
 `Source/build/meta` files.
+
+`public/models/helicopters/` holds, per aircraft, `<id>.lite.glb.gz` (LOD1 and LOD2, loaded first),
+`<id>.lod0.glb.gz` (loaded when someone picks LOD0) and the quad edges of each for the wireframe. The meshes
+keep the airframe coordinates (the pack's UV2/UV3) that the paint shader draws in, and each material carries
+its values from the pack's `Source/build/materials.json`. Rebuild them, and the face counts and pilot eye
+points in `src/data/helicopters.json`, from the pack's FBX files (Blender 5.x):
+
+```
+npm run helicopters                      # every aircraft
+npm run helicopters -- RescueTwin        # some of them
+```

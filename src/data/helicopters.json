@@ -12,7 +12,27 @@
   "length": 11.63,
   "width": 2.69,
   "height": 4.0,
-  "materials": 40
+  "materials": 40,
+  "clockwise": false,
+  "faces": [
+   [
+    40393,
+    11332
+   ],
+   [
+    14664,
+    12071
+   ],
+   [
+    4564,
+    7068
+   ]
+  ],
+  "eye": [
+   -0.4,
+   1.92,
+   1.99
+  ]
  },
  {
   "id": "LightUtility",
@@ -27,7 +47,27 @@
   "length": 7.31,
   "width": 1.98,
   "height": 2.82,
-  "materials": 37
+  "materials": 37,
+  "clockwise": false,
+  "faces": [
+   [
+    27210,
+    7998
+   ],
+   [
+    9800,
+    8460
+   ],
+   [
+    3006,
+    4986
+   ]
+  ],
+  "eye": [
+   -0.33,
+   1.73,
+   0.87
+  ]
  },
  {
   "id": "Firefighter",
@@ -42,7 +82,27 @@
   "length": 15.25,
   "width": 4.37,
   "height": 3.71,
-  "materials": 42
+  "materials": 42,
+  "clockwise": false,
+  "faces": [
+   [
+    31390,
+    13940
+   ],
+   [
+    10584,
+    13282
+   ],
+   [
+    2936,
+    7288
+   ]
+  ],
+  "eye": [
+   -0.483,
+   2.422,
+   2.912
+  ]
  },
  {
   "id": "UtilityTransport",
@@ -57,7 +117,27 @@
   "length": 15.13,
   "width": 4.37,
   "height": 3.83,
-  "materials": 40
+  "materials": 40,
+  "clockwise": false,
+  "faces": [
+   [
+    28906,
+    12326
+   ],
+   [
+    9805,
+    11852
+   ],
+   [
+    2821,
+    6284
+   ]
+  ],
+  "eye": [
+   -0.483,
+   1.879,
+   2.837
+  ]
  },
  {
   "id": "MaritimePatrol",
@@ -72,7 +152,27 @@
   "length": 15.68,
   "width": 4.5,
   "height": 3.83,
-  "materials": 46
+  "materials": 46,
+  "clockwise": false,
+  "faces": [
+   [
+    29629,
+    12265
+   ],
+   [
+    9589,
+    12902
+   ],
+   [
+    2723,
+    6668
+   ]
+  ],
+  "eye": [
+   -0.483,
+   1.89,
+   2.837
+  ]
  },
  {
   "id": "HeavyLift",
@@ -87,7 +187,27 @@
   "length": 15.73,
   "width": 3.78,
   "height": 5.28,
-  "materials": 40
+  "materials": 40,
+  "clockwise": false,
+  "faces": [
+   [
+    38638,
+    16340
+   ],
+   [
+    14078,
+    13882
+   ],
+   [
+    4344,
+    7424
+   ]
+  ],
+  "eye": [
+   -0.508,
+   2.552,
+   6.188
+  ]
  },
  {
   "id": "LightScout",
@@ -102,7 +222,27 @@
   "length": 7.51,
   "width": 3.32,
   "height": 3.08,
-  "materials": 43
+  "materials": 43,
+  "clockwise": false,
+  "faces": [
+   [
+    27422,
+    9840
+   ],
+   [
+    9885,
+    9296
+   ],
+   [
+    2563,
+    6235
+   ]
+  ],
+  "eye": [
+   -0.33,
+   1.995,
+   0.87
+  ]
  },
  {
   "id": "TandemGunship",
@@ -117,7 +257,27 @@
   "length": 15.53,
   "width": 5.29,
   "height": 4.43,
-  "materials": 47
+  "materials": 47,
+  "clockwise": false,
+  "faces": [
+   [
+    24385,
+    12460
+   ],
+   [
+    6955,
+    13470
+   ],
+   [
+    1700,
+    6787
+   ]
+  ],
+  "eye": [
+   0.0,
+   2.957,
+   1.536
+  ]
  },
  {
   "id": "TandemGunshipII",
@@ -132,7 +292,27 @@
   "length": 15.53,
   "width": 5.29,
   "height": 4.43,
-  "materials": 47
+  "materials": 47,
+  "clockwise": false,
+  "faces": [
+   [
+    24489,
+    12572
+   ],
+   [
+    7045,
+    13440
+   ],
+   [
+    1738,
+    6782
+   ]
+  ],
+  "eye": [
+   0.0,
+   2.957,
+   1.536
+  ]
  },
  {
   "id": "TwinAttack",
@@ -147,7 +327,27 @@
   "length": 13.99,
   "width": 4.06,
   "height": 3.78,
-  "materials": 44
+  "materials": 44,
+  "clockwise": false,
+  "faces": [
+   [
+    25460,
+    9176
+   ],
+   [
+    8879,
+    9217
+   ],
+   [
+    2339,
+    5636
+   ]
+  ],
+  "eye": [
+   0.0,
+   2.2,
+   2.02
+  ]
  },
  {
   "id": "EscortAttack",
@@ -162,7 +362,27 @@
   "length": 13.01,
   "width": 4.39,
   "height": 3.48,
-  "materials": 45
+  "materials": 45,
+  "clockwise": true,
+  "faces": [
+   [
+    25942,
+    10556
+   ],
+   [
+    8352,
+    11324
+   ],
+   [
+    2560,
+    5535
+   ]
+  ],
+  "eye": [
+   0.0,
+   1.964,
+   2.624
+  ]
  },
  {
   "id": "AssaultGunship",
@@ -177,6 +397,26 @@
   "length": 18.87,
   "width": 7.18,
   "height": 4.0,
-  "materials": 46
+  "materials": 46,
+  "clockwise": true,
+  "faces": [
+   [
+    35321,
+    15232
+   ],
+   [
+    12151,
+    14289
+   ],
+   [
+    3482,
+    8056
+   ]
+  ],
+  "eye": [
+   0.0,
+   2.367,
+   3.764
+  ]
  }
 ]
